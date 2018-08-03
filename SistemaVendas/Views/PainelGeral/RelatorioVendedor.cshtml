@@ -1,26 +1,28 @@
 ﻿@{
     ViewBag.Title = "Relatório Vendedor";
+    ViewBag.Body = "Selecione o Vendedor";
 }
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
 <script>
-    UrlBuscarVendedor= '@Url.Action("BuscarVendedor", "PainelGeral")';
+    UrlListarVendedor = '@Url.Action("ListarVendedor", "PainelGeral")';
+    UrlBuscarVendedor = '@Url.Action("BuscarVendedor", "PainelGeral")';
+    UrlVendedorId = '@Url.Action("BuscarVendedorId", "PainelGeral")';
 </script>
 
 <div class="jumbotron">
     <div class="col-md-14 row">
-        <div class="col-md-4">
-            @Html.Label("Digite Login")
-            @Html.TextBox("login", null, new { @class = "form-control", placeholder = "Digite o Usuario", maxlength = 128 })
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-12">
             @Html.Label("Digite Nome")
-            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Digite o Nome", maxlength = 128 })
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Digite o Nome", maxlength = 128, required = "required" })
         </div>
         <center>
+            <h3 id="erro_relatorio" style="display:none; margin-top: 20px"><text>Digite um Nome Válido.</text></h3>
+        </center>
+        <center>
             <div class="col-md-14">
-                <button onclick="BuscarVendedor()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
+                <button type="submit" onclick="BuscarVendedorNome()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
             </div>
         </center>
     </div>
@@ -60,47 +62,100 @@
 </div>
 
 
+<h2>@ViewBag.Body.</h2>
+<div class="jumbotron" id="div_lista">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Setor</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpo_lista"></tbody>
+    </table>
+</div>
+
 <script src="~/Scripts/jquery-3.3.1.js"></script>
 <script>
     $(document).ready(function () {
+        PopularListar();
     });
-    BuscarVendedor = function () {
-        usuario = $("#login").val();
-        nome = $("#nome").val();
-        $.post(UrlBuscarVendedor, { usuario, nome }, function (res) {
-            console.log(res);
+
+
+    PopularListar = function () {
+        $.post(UrlListarVendedor, function (res) {
             if (res.Data != null) {
-                $("#nome_relatorio").val(res.Data.Pessoa.Nome);
-                $("#data_nascimento").val(Date(Date.parse(res.Data.Pessoa.DataNascimento, "MM/dd/yyyy")));
-                $("#setor").val(res.Data.Setor);
-                $("#salario").val(res.Data.Salario);
-                $("#usuario").val(res.Data.Login);
-                $("#quantidade_vendas").val(res.Data.QuantidadeVendas);
-                $("#valor_vendas").val(res.Data.ValorTotalVendas + ",00");
-                $("#div_relatorio").css("display", "");
+                for (x = 0; x < res.Data.length; x++) {
+                    var cont = x + 1;
+                    $("#corpo_lista").append("<tr> <th scope = 'row' >" + cont + "</th> <td>" + res.Data[x].Pessoa.Nome + "</td> <td>" + res.Data[x].Setor + "</td> <td><button onclick='BuscarVendedorId(" + res.Data[x].Id + ")' type='button' class='btn btn-danger'>Exibir Relatório</button></td></tr>");
+                }
             } else {
                 // window.location = res.ContentType;
             }
         });
+        //$("#corpo_lista").append("<tr> <th scope = 'row' > 1</th> <td>Mark</td> <td>Otto</td> <td><button type='button' class='btn btn-danger'>Estornar</button></td></tr>");
     }
 
-    Salvar = function () {
-        senha = $("#senha").val();
+    BuscarVendedorId = function (id) {
+        $.post(UrlVendedorId, {id} ,function (res) {
+            if (res.Data != null) {
+                BuscarVendedor(res.Data.Pessoa.Nome);
+            }
+        });
+    }
+
+    BuscarVendedorNome = function () {
         nome = $("#nome").val();
-        data = $("#data_nascimento").val();
-        salario = $("#salario").val();
-        setor = $("#setor").val();
-        usuario = $("#usuario").val();
-        $.post(UrlSalvarVendedor, { usuario, senha, setor, salario, nome, data }, function (res) {
-            if (res.Data == true) {
-                $("#vendedor_salvo").css("display", "");
-            } else {
-                // window.location = res.ContentType;
-            }
-        });
+        if (nome != "") {
+            $.post(UrlBuscarVendedor, { nome }, function (res) {
+                if (res.Data != null) {
+                    $("#nome_relatorio").val(res.Data.Pessoa.Nome);
+                    $("#data_nascimento").val(Date(Date.parse(res.Data.Pessoa.DataNascimento, "MM/dd/yyyy")));
+                    $("#setor").val(res.Data.Setor);
+                    $("#salario").val("R$ " + res.Data.Salario + ",00");
+                    $("#usuario").val(res.Data.Login);
+                    $("#quantidade_vendas").val(res.Data.QuantidadeVendas);
+                    $("#valor_vendas").val("R$ " + res.Data.ValorTotalVendas + ",00");
+                    $("#erro_relatorio").css("display", "none");
+                    $("#div_relatorio").css("display", "");
+                } else {
+                    $("#erro_relatorio").css("display", "");
+                    $("#div_relatorio").css("display", "none");
+                }
+            });
+        } else {
+            $("#div_relatorio").css("display", "none");
+            $("#erro_relatorio").css("display", "");
+        }
     }
 
-
+    BuscarVendedor = function (nome) {
+        if (nome == undefined || nome == null || nome == "") {
+            nome = $("#nome").val();
+        } else if (nome != "") {
+                $.post(UrlBuscarVendedor, { nome }, function (res) {
+                    if (res.Data != null) {
+                        $("#nome_relatorio").val(res.Data.Pessoa.Nome);
+                        $("#data_nascimento").val(Date(Date.parse(res.Data.Pessoa.DataNascimento, "MM/dd/yyyy")));
+                        $("#setor").val(res.Data.Setor);
+                        $("#salario").val("R$ " + res.Data.Salario + ",00");
+                        $("#usuario").val(res.Data.Login);
+                        $("#quantidade_vendas").val(res.Data.QuantidadeVendas);
+                        $("#valor_vendas").val("R$ " + res.Data.ValorTotalVendas + ",00");
+                        $("#erro_relatorio").css("display", "none");
+                        $("#div_relatorio").css("display", "");
+                    } else {
+                        $("#erro_relatorio").css("display", "");
+                        $("#div_relatorio").css("display", "none");
+                    }
+                });
+            } else {
+                $("#div_relatorio").css("display", "none");
+                $("#erro_relatorio").css("display", "");
+            }
+    }
 </script>
 
 

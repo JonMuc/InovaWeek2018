@@ -21,11 +21,11 @@
         </div>
         <div class="col-md-4">
             @Html.Label("Data da Compra")
-            @Html.TextBox("data_compra", null, new { @class = "form-control", placeholder = "Data da Compra", type = "date" })
+            @Html.TextBox("data_compra", null, new { @class = "form-control", placeholder = "Data da Compra" })
         </div>
         <div class="col-md-4">
             @Html.Label("Valor da Compra")
-            @Html.TextBox("valor_compra", null, new { @class = "form-control", placeholder = "Valor", maxlength = 128, type = "number" })
+            @Html.TextBox("valor_compra", null, new { @class = "form-control", placeholder = "Valor", maxlength = 128 })
         </div>
         <div class="col-md-8">
             @Html.Label("Quantidade")
@@ -33,7 +33,10 @@
         </div>
     </div>
 </div>
-
+<center>
+    <h3 id="compra_erro" style="display:none; margin-top: 20px"><text>Preencha todos os campos.</text></h3>
+    <h3 id="compra_salvo" style="display:none; margin-top: 20px"><text>Compra realizada com sucesso.</text></h3>
+</center>
 <div class="jumbotron">
     @Html.Label("Dados do Produto")
     <div class="col-md-14 row">
@@ -43,13 +46,12 @@
         </div>
         <div class="col-md-4">
             @Html.Label("Descrição")
-            @Html.TextBox("descricao", null, new { @class = "form-control", placeholder = "Descrição", maxlength = 128})
+            @Html.TextBox("descricao", null, new { @class = "form-control", placeholder = "Descrição", maxlength = 128 })
         </div>
         <div class="col-md-4">
             @Html.Label("Preço Unitário")
-            @Html.TextBox("valor_unitario", null, new { @class = "form-control", placeholder = "Preço Unitário", maxlength = 128, type = "number" })
+            @Html.TextBox("valor_unitario", null, new { @class = "form-control", placeholder = "Preço Unitário", maxlength = 128 })
         </div>
-        <h3 id="compra_salvo" style="display:none; margin-top: 20px"><text>Compra realizada com sucesso.</text></h3>
         <center>
             <div class="col-md-14">
                 <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
@@ -59,10 +61,14 @@
     </div>
 </div>
 
-<script src="~/Scripts/jquery-3.3.1.js"></script>
 <script>
     $(document).ready(function () {
+        $('#cnpj').mask('00.000.000/0000-00', { reverse: true });
+        $('#data_compra').mask('00/00/0000');
+        $('#valor_compra').mask("#.##0,00", { reverse: true });
+        $('#valor_unitario').mask("00000000", { reverse: true });
     });
+
     Limpar = function () {
         $("#valor_unitario").val("");
         $("#descricao").val("");
@@ -83,13 +89,20 @@
         dataCompra = $("#data_compra").val();
         razaoSocial = $("#razao_social").val();
         valorCompra = $("#valor_compra").val();
-        $.post(UrlSalvarCompra, { valorUnitario, descricao, nome, quantidade, cnpj, dataCompra, razaoSocial, valorCompra}, function (res) {
-            if (res.Data == true) {
-                $("#compra_salvo").css("display", "");
-            } else {
-               // window.location = res.ContentType;
-            }
-        });
+        if (valorUnitario == "" || descricao == "" || nome == "" || quantidade == "" || cnpj == "" || dataCompra == "" || razaoSocial == "" || valorCompra == "") {
+            $("#compra_erro").css("display", "");
+            $("#compra_salvo").css("display", "none");
+        } else {
+            $.post(UrlSalvarCompra, { valorUnitario, descricao, nome, quantidade, cnpj, dataCompra, razaoSocial, valorCompra }, function (res) {
+                if (res.Data == true) {
+                    $("#compra_salvo").css("display", "");
+                    $("#compra_erro").css("display", "none");
+                } else {
+                    $("#compra_salvo").css("display", "none");
+                    $("#compra_erro").css("display", "");
+                } 
+            });
+        }
     }
 
 

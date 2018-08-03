@@ -3,8 +3,10 @@ using SistemaVendas.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using System.Web;
 using System.Web.Mvc;
+using SistemaVendas.Repository;
 
 namespace SistemaVendas.Controllers
 {
@@ -60,28 +62,26 @@ namespace SistemaVendas.Controllers
         {
             var result = new JsonResult();
             var total = 0.0;
+            var pagSeguro = new PagSeguro();
+            var item = new ItemVenda();
+            var prod = new ItemVenda();
             var vendedor = _session.Query<Vendedor>().OrderByDescending(x => x.Id).FirstOrDefault();
             var cliente = _session.Query<Cliente>().Where(x => x.Id == idCliente).FirstOrDefault();
-            //List<Produto> listProduto = null;
-            //foreach (int i in ListaProdutos)
-            //{
-            //    if (i != 0)
-            //    {
-            //        listProduto.Add(pro);
-            //    }
-            //}
             var listProduto = _session.Query<Produto>().Where(x => ListaProdutos.Contains(x.Id)).ToList();
             var cont = 0;
+            var itens = "";
             foreach (Produto i in listProduto)
             {
                 total += (float)i.Valor * ListaQuantidade[cont];
+                itens = itens + i.Nome + " ";
                 cont++;
             }
+            DateTime data = DateTime.Now;
             var venda = new Venda();
             venda.IdCliente = cliente.Id;
             venda.IdVendedor = vendedor.Id;
             venda.ValorTotal = (float)total;
-            venda.DataVenda = new DateTime().ToLocalTime();
+            venda.DataVenda = data;
             cont = 0;
             foreach (Produto i in listProduto)
             {
@@ -92,7 +92,19 @@ namespace SistemaVendas.Controllers
                 _session.Save(itemVenda);
                 cont++;
             }
+            int refe;
+            try
+            {
+                 refe = _session.Query<Venda>().OrderByDescending(x => x.Referencia).FirstOrDefault().Referencia + 1;
+                 venda.Referencia = refe;
+            }
+            catch
+            {
+                venda.Referencia = 1;
+            }
             _session.Save(venda);
+            var url = pagSeguro.CheckOut(cliente.Pessoa.Nome, itens, venda.ValorTotal.ToString(), cont.ToString(), cliente.Telefone, venda.Referencia.ToString());
+            venda.url = url;
             result.Data = venda;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -108,10 +120,13 @@ namespace SistemaVendas.Controllers
 
         public ActionResult ConfirmarEstorno(int idVenda)
         {
+            var pagSeguro = new PagSeguro();
             var result = new JsonResult();
             var venda = _session.Query<Venda>().Where(x => x.Id == idVenda).FirstOrDefault();
             venda.IdVendedor = 0;
             venda.IdCliente = 0;
+            var code = pagSeguro.ConsultarTransacao(venda.Referencia);
+            pagSeguro.Estornar(code);
             _session.Save(venda);
             result.Data = venda;
             return Json(result, JsonRequestBehavior.AllowGet);
@@ -126,21 +141,24 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult BuscarVendedor(string usuario, string nome)
+        public ActionResult BuscarVendedor(string nome)
         {
             var result = new JsonResult();
             var total = 0.0;
-            var resp = _session.Query<Vendedor>().Where(x => x.Login.ToLower() == usuario.ToLower()).FirstOrDefault();
             var pessoa = _session.Query<Pessoa>().Where(x => x.Nome.ToLower() == nome.ToLower()).FirstOrDefault();
-            resp.Pessoa = pessoa;
-            var quantiVenda = _session.Query<Venda>().Where(x => x.IdVendedor == resp.Id).ToList();
-            resp.QuantidadeVendas = quantiVenda.Count();
-            foreach (Venda i in quantiVenda)
+            if (pessoa != null)
             {
-                total += i.ValorTotal;
+                var resp = _session.Query<Vendedor>().Where(x => x.IdPessoa == pessoa.Id).FirstOrDefault();
+                resp.Pessoa = pessoa;
+                var quantiVenda = _session.Query<Venda>().Where(x => x.IdVendedor == resp.Id).ToList();
+                resp.QuantidadeVendas = quantiVenda.Count();
+                foreach (Venda i in quantiVenda)
+                {
+                    total += i.ValorTotal;
+                }
+                resp.ValorTotalVendas = (float)total;
+                result.Data = resp;
             }
-            resp.ValorTotalVendas = (float)total;
-            result.Data = resp;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
         
@@ -168,14 +186,89 @@ namespace SistemaVendas.Controllers
                 compra.Fornecedor = fornecedor;
                 compra.ValorTotal = valorCompra == null ? 0 : valorCompra.Value;
                 _session.Save(compra);
-                itemCompra.Quantidade = quantidade == null ? 0 : quantidade.Value;
-                itemCompra.Compra = compra;
-                _session.Save(itemCompra);
                 produto.Descricao = descricao;
-               // produto.ItemCompra = itemCompra;
                 produto.Nome = nome;
                 produto.Valor = valorUnitario == null ? 0 : valorUnitario.Value;
                 _session.Save(produto);
+                itemCompra.Quantidade = quantidade == null ? 0 : quantidade.Value;
+                itemCompra.Compra = compra;
+                itemCompra.Produto = produto;
+                _session.Save(itemCompra);
+                result.Data = true;
+            }
+            catch
+            {
+                result.Data = false;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        
+        public ActionResult BuscarVendedorId(int id)
+        {
+            var result = new JsonResult();
+            var vendedor = _session.Query<Vendedor>().Where(x => x.Id == id).FirstOrDefault();
+            vendedor.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == vendedor.IdPessoa).FirstOrDefault();
+            result.Data = vendedor;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult BuscarClienteId(int id)
+        {
+            var result = new JsonResult();
+            var cliente = _session.Query<Cliente>().Where(x => x.Id == id).FirstOrDefault();
+            cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
+            result.Data = cliente;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ListarVendedor()
+        {
+            var result = new JsonResult();
+            var lista = _session.Query<Vendedor>().ToList();
+            foreach (Vendedor elemento in lista)
+            {
+                elemento.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == elemento.IdPessoa).FirstOrDefault();
+            }
+            result.Data = lista;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ListarClientes()
+        {
+            var result = new JsonResult();
+            var lista = _session.Query<Cliente>().ToList();
+            foreach (Cliente elemento in lista)
+            {
+                elemento.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == elemento.IdPessoa).FirstOrDefault();
+            }
+            result.Data = lista;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GerarListaEstorno()
+        {
+            var result = new JsonResult();
+            var lista = _session.Query<Venda>().Where(x => x.IdCliente != 0 && x.IdVendedor != 0).ToList();
+            result.Data = lista;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AtualizarVendedor(int id, string nome, string senha, string setor, string usuario, float? salario, DateTime data)
+        {
+            var vendedor = _session.Query<Vendedor>().Where(x => x.Id == id).FirstOrDefault();
+            vendedor.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == vendedor.IdPessoa).FirstOrDefault();
+            var result = new JsonResult();
+            try
+            {
+                vendedor.Pessoa.Nome = nome;
+                vendedor.Pessoa.DataNascimento = data;
+                _session.Save(vendedor.Pessoa);
+                _session.Flush();
+                vendedor.Login = usuario;
+                vendedor.Senha = senha;
+                vendedor.Setor = setor;
+                vendedor.Salario = salario == null ? 0 : salario.Value;
+                _session.Save(vendedor);
                 result.Data = true;
             }
             catch
@@ -199,9 +292,33 @@ namespace SistemaVendas.Controllers
                 vendedor.Login = usuario;
                 vendedor.Senha = senha;
                 vendedor.Pessoa = pessoa;
+                vendedor.IdPessoa = pessoa.Id;
                 vendedor.Setor = setor;
                 vendedor.Salario = salario == null ? 0 : salario.Value;
                 _session.Save(vendedor);
+                result.Data = true;
+            }
+            catch
+            {
+                result.Data = false;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AtualizarCliente(int id, string nome, string cpf, string telefone, string endereco, DateTime data)
+        {
+            var cliente = _session.Query<Cliente>().Where(x => x.Id == id).FirstOrDefault();
+            cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
+            var result = new JsonResult();
+            try
+            {
+                cliente.Pessoa.Nome = nome;
+                cliente.Pessoa.DataNascimento = data;
+                _session.Save(cliente.Pessoa);
+                cliente.CPF = cpf;
+                cliente.Endereco = endereco;
+                cliente.Telefone = telefone;
+                _session.Save(cliente);
                 result.Data = true;
             }
             catch
@@ -222,6 +339,7 @@ namespace SistemaVendas.Controllers
                 pessoa.DataNascimento = data;
                 _session.Save(pessoa);
                 cliente.CPF = cpf;
+                cliente.IdPessoa = pessoa.Id;
                 cliente.Endereco = endereco;
                 cliente.Pessoa = pessoa;
                 cliente.Telefone = telefone;

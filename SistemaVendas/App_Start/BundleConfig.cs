@@ -9,11 +9,12 @@ namespace SistemaVendas
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                        "~/Scripts/jquery-3.3.1.js"));
+                       "~/Scripts/jquery-3.1.1.min.js",
+                       "~/Scripts/jquery.mask.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
-                      "~/Static/scripts/jquery.validate.min.js",
-                      "~/Static/scripts/jquery.validate.unobstrusive.min.js"));
+                      "~/Scripts/jquery.validate.min.js",
+                      "~/Scripts/jquery.validate.unobstrusive.min.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));

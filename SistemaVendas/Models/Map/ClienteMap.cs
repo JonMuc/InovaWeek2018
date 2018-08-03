@@ -19,6 +19,7 @@ namespace SistemaVendas.Models.Map
             Property<string>(x => x.CPF);
             Property<string>(x => x.Telefone);
             Property<string>(x => x.Endereco);
+            Property<int>(x => x.IdPessoa);
             OneToOne(x => x.Pessoa, map =>
             {
                 map.PropertyReference(typeof(Pessoa).GetProperty("PessoaId"));

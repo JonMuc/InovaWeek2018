@@ -14,30 +14,8 @@ namespace SistemaVendas.Controllers
         {
         }
 
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
-
-
         public ActionResult Index()
         {
-            //var a = new Pessoa();
-            //a.Nome = "Joao";
-            //a.DataNascimento = new DateTime();
-            //_session.Save(a);
-            //var x = _session.Query<Pessoa>().FirstOrDefault();
-            //var c = new Cliente();
-            //c.Pessoa = x;
-            //c.Telefone = "999999999";
-            //c.Endereco = "Vila";
-            //c.CPF = "1521632165";
-            //_session.Save(c);
-            //var vend = new Venda();
-            //vend.Cliente = c;
-            //vend.ValorTotal = 123;
-            //_session.Save(vend);
-            //var p = _session.Query<Cliente>().FirstOrDefault();
             return View();
         }
 
@@ -45,13 +23,6 @@ namespace SistemaVendas.Controllers
         {
             var x = new JsonResult();
             x.Data = _session.Get<Pessoa>(id);
-            return Json(x, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetUsers()
-        {
-            var x = new JsonResult();
-            x.Data = _session.Query<Pessoa>();
             return Json(x, JsonRequestBehavior.AllowGet);
         }
 

@@ -10,6 +10,7 @@ namespace SistemaVendas.Models
         public virtual int Id { get; set; }
         public virtual string Setor { get; set; }
         public virtual float Salario { get; set; }
+        public virtual int IdPessoa { get; set; }
         public virtual Pessoa Pessoa { get; set; }
         public virtual List<Venda> Vendas { get; set; }
         public virtual string Login { get; set; }

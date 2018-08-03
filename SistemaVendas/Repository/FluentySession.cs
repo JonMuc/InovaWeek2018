@@ -19,7 +19,10 @@ namespace SistemaVendas.Repository
 {
     public class FluentySession
     {
-        private static string ConnectionString = "Data Source=JOAOLUIZ;Initial Catalog=SistemaVendasNH;Integrated Security=True";
+        //private static string ConnectionString = "Data Source=JOAOLUIZ;Initial Catalog=SistemaVendasBD;Integrated Security=True";
+        private static string ConnectionString = "Data Source=sistemavendasbd.database.windows.net;Initial Catalog=sistemavendasBD;Integrated Security=False;User ID=sistemavendasBD;Password=Sistemavenda123;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        
+        // private static string ConnectionString = "Data Source=sistemavendasbd.database.windows.net;Initial Catalog=sistemavendasbd;Integrated Security=False;User ID=sistemabd;Password=Sistema@bd;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private static ISessionFactory session;
         private static Configuration NHConfig;
 
@@ -29,7 +32,7 @@ namespace SistemaVendas.Repository
             configure.SessionFactoryName("BuildIt");
             configure.DataBaseIntegration(db =>
             {
-                db.Dialect<MsSql2012Dialect>();
+                db.Dialect<MsSqlAzure2008Dialect>();
                 db.Driver<SqlClientDriver>();
                 db.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
                 db.IsolationLevel = System.Data.IsolationLevel.ReadCommitted;
@@ -45,8 +48,8 @@ namespace SistemaVendas.Repository
         {
             NHConfig = ConfigNHibernate();
             HbmMapping mapping = GetMappings();
-            NHConfig.AddDeserializedMapping(mapping, "SistemaVendasNH");
-            SchemaMetadataUpdater.QuoteTableAndColumns(NHConfig, new MsSql2012Dialect());
+            NHConfig.AddDeserializedMapping(mapping, "SistemaVendasBD");
+            SchemaMetadataUpdater.QuoteTableAndColumns(NHConfig, new MsSqlAzure2008Dialect());
             session = NHConfig.BuildSessionFactory();
 
             //CreateDataBase();

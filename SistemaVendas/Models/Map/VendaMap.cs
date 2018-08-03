@@ -18,6 +18,7 @@ namespace SistemaVendas.Models.Map
             Property<DateTime>(x => x.DataVenda);
             Property<float>(x => x.ValorTotal);
             Property<int>(x => x.IdCliente);
+            Property<int>(x => x.Referencia);
             Property<int>(x => x.IdVendedor);
             //OneToOne<Cliente>(x => x.Cliente, map =>
             //{

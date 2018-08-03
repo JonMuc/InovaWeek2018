@@ -16,21 +16,15 @@ namespace SistemaVendas.Controllers
             _session = session;
         }
 
-        public void asd()
-        {
-
-        }
         protected override void OnActionExecuting(ActionExecutingContext actionContext)
         {
             base.OnActionExecuting(actionContext);
-            //DependencyResolver.Current.GetService<ISession>().BeginTransaction(IsolationLevel.ReadCommitted);
             _session.BeginTransaction(IsolationLevel.ReadCommitted);
         }
 
         protected override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
         {
             base.OnActionExecuted(actionExecutedContext);
-            //ITransaction currentTransaction = DependencyResolver.Current.GetService<ISession>().Transaction;
             ITransaction currentTransaction = _session.Transaction;
 
             try

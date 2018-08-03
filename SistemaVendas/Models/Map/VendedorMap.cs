@@ -17,6 +17,7 @@ namespace SistemaVendas.Models.Map
             });
             Property<string>(x => x.Setor);
             Property<float>(x => x.Salario);
+            Property<int>(x => x.IdPessoa);
             OneToOne(x => x.Pessoa, map =>
             {
                 map.PropertyReference(typeof(Pessoa).GetProperty("PessoaId"));

@@ -6,7 +6,8 @@
 
 <script>
     UrlBuscarEstorno = '@Url.Action("BuscarEstorno", "PainelGeral")';
-    UrlConfirmarEstorno= '@Url.Action("ConfirmarEstorno", "PainelGeral")';
+    UrlConfirmarEstorno = '@Url.Action("ConfirmarEstorno", "PainelGeral")';
+    UrlBuscarLista = '@Url.Action("GerarListaEstorno", "PainelGeral")';
 </script>
 
 <div class="jumbotron">
@@ -16,15 +17,12 @@
             @Html.TextBox("cpf", null, new { @class = "form-control", placeholder = "Digite o CPF", maxlength = 128 })
         </div>
         <center>
-            <div class="col-md-14">
+            <div class="col-md-28">
                 <button onclick="BuscarEstornoVenda()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
             </div>
         </center>
     </div>
-</div>
-
-<div class="jumbotron" id="div_resultado" style="display:none">
-    <div class="col-md-14 row">
+    <div class="col-md-14 row" id="div_resultado" style="display:none">
         <div class="col-md-4">
             @Html.Hidden("idVenda")
             @Html.Label("Data da Venda")
@@ -35,25 +33,57 @@
             @Html.TextBox("valor_venda", null, new { @class = "form-control", placeholder = "Valor", maxlength = 128, disabled = "disabled" })
         </div>
         <center>
-            <h3 id="estorno_suce" style="display:none; margin-top: 20px"><text>Estorno realizado com sucesso.</text></h3>
-        </center>
-        <center>
             <div class="col-md-14">
                 <button onclick="ConfirmarEstornoVenda()" style="margin-top: 20px" class="btn btn-success">Estornar</button>
             </div>
         </center>
     </div>
 </div>
-
+<center>
+    <h3 id="estorno_suce" style="display:none; margin-top: 20px"><text>Estorno realizado com sucesso.</text></h3>
+</center>
+<div class="jumbotron" id="div_lista">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Data da Compra</th>
+                <th scope="col">Valor Total (R$)</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpo_lista"></tbody>
+    </table>
+</div>
 
 <script src="~/Scripts/jquery-3.3.1.js"></script>
 <script>
     $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: true });
+        PopularListar();
     });
+
+    EstornarItem = function (id) {
+        ConfirmarEstornoVenda(id);
+    }
+
+    PopularListar = function () {
+        $.post(UrlBuscarLista, function (res) {
+            if (res.Data != null) {
+                for (x = 0; x < res.Data.length; x++) {
+                    var cont = x + 1;
+                    $("#corpo_lista").append("<tr> <th scope = 'row' >" + cont + "</th> <td>" + Date(Date.parse(res.Data[x].DataVenda, "MM/dd/yyyy")) + "</td> <td>" + "R$ " + res.Data[x].ValorTotal + ",00"+ "</td> <td><button onclick='EstornarItem(" + res.Data[x].Id + ")' type='button' class='btn btn-danger'>Estornar</button></td></tr>");
+                }
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+        //$("#corpo_lista").append("<tr> <th scope = 'row' > 1</th> <td>Mark</td> <td>Otto</td> <td><button type='button' class='btn btn-danger'>Estornar</button></td></tr>");
+    }
+
     BuscarEstornoVenda = function () {
         cpf = $("#cpf").val();
         $.post(UrlBuscarEstorno, { cpf }, function (res) {
-            console.log(res);
             if (res.Data != null) {
                 $("#valor_venda").val("R$ " + res.Data.Compras[0].ValorTotal + ",00");
                 $("#data_venda").val(Date(Date.parse(res.Data.Compras[0].DataVenda, "MM/dd/yyyy")));
@@ -65,14 +95,18 @@
         });
     }
 
-    ConfirmarEstornoVenda = function () {
-        idVenda = $("#idVenda").val();
-        $.post(UrlSalvarVendedor, { idVenda}, function (res) {
+    ConfirmarEstornoVenda = function (idVenda) {
+        if (!idVenda) {
+            idVenda = $("#idVenda").val();
+        }
+        $.post(UrlConfirmarEstorno, { idVenda }, function (res) {
+            location.reload();
             if (res.Data == true) {
                 $("#estorno_suce").css("display", "");
             } else {
                 // window.location = res.ContentType;
             }
+            $("#estorno_suce").css("display", "");
         });
     }
 
