@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Login";
+}
+
+<script>
+    UrlLogar = '@Url.Action("Logar", "Home")';
+</script>
+
+<div class="row" style="margin-top: 50px">
+    <center>
+        <div class="col-md-12 container">
+            <div class="form-group">
+                <label>Usuário</label>
+                <input type="text" placeholder="Usuário" class="form-control" id="usuario">
+            </div>
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" placeholder="Senha" class="form-control" id="senha">
+            </div>
+            <h3 style="display:none" id="msg_erro"><text style="color:red">Usuário ou senha invalido.</text></h3>
+            <button onclick="Logar()" class="btn btn-block btn-success btn-lg">Logar</button>
+            <button class="btn btn-block btn-danger btn-lg">Cancelar</button>
+        </div>
+    </center>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+        EsconderMenu();
+    });
+
+    EsconderMenu = function () {
+        $("#corpo_geral").css("display", "none");
+    }
+
+    Logar = function () {
+        login = $("#usuario").val();
+        senha = $("#senha").val();
+        console.log(login + " " + senha);
+        $.post(UrlLogar, { login, senha }, function (res) {
+            console.log(res);
+            if (res.Data != true) {
+                $("#msg_erro").css("display", "");
+            } else {
+                window.location = res.ContentType;
+            }
+        });
+    }
+   
+
+</script>

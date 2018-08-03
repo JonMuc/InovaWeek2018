@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "Cadastrar Vendedor";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlSalvarVendedor= '@Url.Action("SalvarVendedor", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Label("Nome")
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Data de Nascimento")
+            @Html.TextBox("data_nascimento", null, new { @class = "form-control", placeholder = "Nascimento", type = "date" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Setor")
+            @Html.TextBox("setor", null, new { @class = "form-control", placeholder = "Setor", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Salário")
+            @Html.TextBox("salario", null, new { @class = "form-control", placeholder = "Salário", maxlength = 128, type = "number" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Usuário")
+            @Html.TextBox("usuario", null, new { @class = "form-control", placeholder = "Usuário", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Senha")
+            @Html.TextBox("senha", null, new { @class = "form-control", placeholder = "Senha", maxlength = 128, type = "password" })
+        </div>
+        <h3 id="vendedor_salvo" style="display:none; margin-top: 20px"><text>Vendedor salvo com sucesso.</text></h3>
+        <center>
+            <div class="col-md-14">
+                <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
+                <button onclick="Limpar()" style="margin-top: 20px" class="btn btn-danger">Limpar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+    });
+    Limpar = function () {
+        $("#senha").val("");
+        $("#nome").val("");
+        $("#data_nascimento").val("");
+        $("#salario").val("");
+        $("#setor").val("");
+        $("#usuario").val("");
+    }
+
+    Salvar = function () {
+        senha = $("#senha").val();
+        nome = $("#nome").val();
+        data = $("#data_nascimento").val();
+        salario = $("#salario").val();
+        setor = $("#setor").val();
+        usuario = $("#usuario").val();
+        $.post(UrlSalvarVendedor, { usuario, senha, setor, salario, nome, data }, function (res) {
+            if (res.Data == true) {
+                $("#vendedor_salvo").css("display", "");
+            } else {
+               // window.location = res.ContentType;
+            }
+        });
+    }
+
+
+</script>
+
+
+
+

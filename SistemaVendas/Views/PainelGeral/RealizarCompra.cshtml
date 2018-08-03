@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Realizar Compra";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlSalvarCompra= '@Url.Action("SalvarCompra", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    @Html.Label("Dados da Compra")
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Label("CNPJ Fornecedor")
+            @Html.TextBox("cnpj", null, new { @class = "form-control", placeholder = "CNPJ", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Razão Social")
+            @Html.TextBox("razao_social", null, new { @class = "form-control", placeholder = "Razão Social", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Data da Compra")
+            @Html.TextBox("data_compra", null, new { @class = "form-control", placeholder = "Data da Compra", type = "date" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Valor da Compra")
+            @Html.TextBox("valor_compra", null, new { @class = "form-control", placeholder = "Valor", maxlength = 128, type = "number" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("Quantidade")
+            @Html.TextBox("quantidade", null, new { @class = "form-control", placeholder = "Quantidade", maxlength = 128, type = "number" })
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron">
+    @Html.Label("Dados do Produto")
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Label("Nome")
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Descrição")
+            @Html.TextBox("descricao", null, new { @class = "form-control", placeholder = "Descrição", maxlength = 128})
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Preço Unitário")
+            @Html.TextBox("valor_unitario", null, new { @class = "form-control", placeholder = "Preço Unitário", maxlength = 128, type = "number" })
+        </div>
+        <h3 id="compra_salvo" style="display:none; margin-top: 20px"><text>Compra realizada com sucesso.</text></h3>
+        <center>
+            <div class="col-md-14">
+                <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
+                <button onclick="Limpar()" style="margin-top: 20px" class="btn btn-danger">Limpar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+    });
+    Limpar = function () {
+        $("#valor_unitario").val("");
+        $("#descricao").val("");
+        $("#nome").val("");
+        $("#quantidade").val("");
+        $("#cnpj").val("");
+        $("#data_compra").val("");
+        $("#razao_social").val("");
+        $("#valor_compra").val("");
+    }
+
+    Salvar = function () {
+        valorUnitario = $("#valor_unitario").val();
+        descricao = $("#descricao").val();
+        nome = $("#nome").val();
+        quantidade = $("#quantidade").val();
+        cnpj = $("#cnpj").val();
+        dataCompra = $("#data_compra").val();
+        razaoSocial = $("#razao_social").val();
+        valorCompra = $("#valor_compra").val();
+        $.post(UrlSalvarCompra, { valorUnitario, descricao, nome, quantidade, cnpj, dataCompra, razaoSocial, valorCompra}, function (res) {
+            if (res.Data == true) {
+                $("#compra_salvo").css("display", "");
+            } else {
+               // window.location = res.ContentType;
+            }
+        });
+    }
+
+
+</script>
+
+
+
+

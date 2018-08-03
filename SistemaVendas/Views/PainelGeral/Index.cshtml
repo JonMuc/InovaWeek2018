@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Sistema de Vendas CC5M</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <p><a class="btn btn-default" href="">Leia Mais &raquo;</a></p>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+      //  EsconderMenu();
+    });
+
+    EsconderMenu = function () {
+        $("#corpo_geral").css("display", "none");
+    }
+
+    Logar = function () {
+        login = $("#usuario").val();
+        senha = $("#senha").val();
+        console.log(login + " " + senha);
+        $.post(UrlLogar, { login, senha }, function (res) {
+            console.log(res);
+            if (res.Data != true) {
+                $("#msg_erro").css("display", "");
+            } else {
+                window.location = res.ContentType;
+            }
+        });
+    }
+
+
+</script>

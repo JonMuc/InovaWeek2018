@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Estornar Venda";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlBuscarEstorno = '@Url.Action("BuscarEstorno", "PainelGeral")';
+    UrlConfirmarEstorno= '@Url.Action("ConfirmarEstorno", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    <div class="col-md-14 row">
+        <div class="col-md-12">
+            @Html.Label("Digite CPF do Cliente")
+            @Html.TextBox("cpf", null, new { @class = "form-control", placeholder = "Digite o CPF", maxlength = 128 })
+        </div>
+        <center>
+            <div class="col-md-14">
+                <button onclick="BuscarEstornoVenda()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+<div class="jumbotron" id="div_resultado" style="display:none">
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Hidden("idVenda")
+            @Html.Label("Data da Venda")
+            @Html.TextBox("data_venda", null, new { @class = "form-control", placeholder = "Data", maxlength = 128, disabled = "disabled" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("Valor da Venda")
+            @Html.TextBox("valor_venda", null, new { @class = "form-control", placeholder = "Valor", maxlength = 128, disabled = "disabled" })
+        </div>
+        <center>
+            <h3 id="estorno_suce" style="display:none; margin-top: 20px"><text>Estorno realizado com sucesso.</text></h3>
+        </center>
+        <center>
+            <div class="col-md-14">
+                <button onclick="ConfirmarEstornoVenda()" style="margin-top: 20px" class="btn btn-success">Estornar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    $(document).ready(function () {
+    });
+    BuscarEstornoVenda = function () {
+        cpf = $("#cpf").val();
+        $.post(UrlBuscarEstorno, { cpf }, function (res) {
+            console.log(res);
+            if (res.Data != null) {
+                $("#valor_venda").val("R$ " + res.Data.Compras[0].ValorTotal + ",00");
+                $("#data_venda").val(Date(Date.parse(res.Data.Compras[0].DataVenda, "MM/dd/yyyy")));
+                $("#idVenda").val(res.Data.Compras[0].Id);
+                $("#div_resultado").css("display", "");
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+    }
+
+    ConfirmarEstornoVenda = function () {
+        idVenda = $("#idVenda").val();
+        $.post(UrlSalvarVendedor, { idVenda}, function (res) {
+            if (res.Data == true) {
+                $("#estorno_suce").css("display", "");
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+    }
+
+
+</script>
+
+
+
+
