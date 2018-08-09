@@ -193,6 +193,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Avaliacao.cs" />
+    <Compile Include="Models\Map\AvaliacaoMap.cs" />
+    <Compile Include="Models\Map\SeguidorMap.cs" />
+    <Compile Include="Models\Seguidor.cs" />
+    <Compile Include="Models\Map\PostagemMap.cs" />
+    <Compile Include="Models\Postagem.cs" />
+    <Compile Include="Models\Map\UsuarioMap.cs" />
+    <Compile Include="Models\Usuario.cs" />
     <Compile Include="Models\Cliente.cs" />
     <Compile Include="Models\Compra.cs" />
     <Compile Include="Models\Fornecedor.cs" />
