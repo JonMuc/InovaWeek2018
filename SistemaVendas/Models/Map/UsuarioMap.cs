@@ -18,6 +18,8 @@ namespace SistemaVendas.Models.Map
             });
             Property<long>(x => x.AreasInteresse);
             Property<long>(x => x.Curso);
+            Property<long>(x => x.QuantidadeAvaliacao);
+            Property<long>(x => x.NotaAvaliacao);
             Property<string>(x => x.Login);
             Property<string>(x => x.Senha);
             Property<string>(x => x.Email);

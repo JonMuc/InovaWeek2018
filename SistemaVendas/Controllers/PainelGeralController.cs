@@ -20,6 +20,7 @@ namespace SistemaVendas.Controllers
 
         public ActionResult Index()
         {
+            var a = Session;
             return View();
         }
 
