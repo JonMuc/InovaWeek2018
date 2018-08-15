@@ -60,6 +60,9 @@ html {
 body {
   margin: 0;
 }
+backgroundlogin{
+    opacity: 0.5;
+}
 
 a:focus {
   outline: thin dotted;

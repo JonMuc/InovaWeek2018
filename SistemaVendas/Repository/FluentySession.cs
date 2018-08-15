@@ -19,9 +19,9 @@ namespace SistemaVendas.Repository
 {
     public class FluentySession
     {
-        private static string ConnectionString = "Data Source=JOAOLUIZ;Initial Catalog=SistemaVendasBD;Integrated Security=True";
+        private static string ConnectionString = "Data Source=DESKTOP-7L5H0ES; user Id=sa; Password=123456; Initial Catalog=SistemaInova;Integrated Security=True";
         //private static string ConnectionString = "Data Source=sistemavendasbd.database.windows.net;Initial Catalog=sistemavendasBD;Integrated Security=False;User ID=sistemavendasBD;Password=Sistemavenda123;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        
+
         // private static string ConnectionString = "Data Source=sistemavendasbd.database.windows.net;Initial Catalog=sistemavendasbd;Integrated Security=False;User ID=sistemabd;Password=Sistema@bd;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
         private static ISessionFactory session;
         private static Configuration NHConfig;
@@ -48,11 +48,11 @@ namespace SistemaVendas.Repository
         {
             NHConfig = ConfigNHibernate();
             HbmMapping mapping = GetMappings();
-            NHConfig.AddDeserializedMapping(mapping, "SistemaVendasBD");
+            NHConfig.AddDeserializedMapping(mapping, "SistemaInova");
             SchemaMetadataUpdater.QuoteTableAndColumns(NHConfig, new MsSqlAzure2008Dialect());
             session = NHConfig.BuildSessionFactory();
 
-            CreateDataBase();
+            //CreateDataBase();
             if (!ValidateSchema())
             {
               //  throw new Exception("dis db is fucked up boi");
