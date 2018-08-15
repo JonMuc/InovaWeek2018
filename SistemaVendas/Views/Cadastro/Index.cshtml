@@ -1,0 +1,122 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+
+<div class="jumbotron" style="align-items:center">
+    <div class="col-md-24 row">
+        <div class="col-md-7">
+            @Html.Hidden("Id")
+            @Html.Label("Nome")
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Sobrenome")
+            @Html.TextBox("sobrenome", null, new { @class = "form-control", placeholder = "Sobrenome", maxlength = 128 })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Data de Nascimento")
+            @Html.TextBox("data_nascimento", null, new { @class = "form-control", placeholder = "Nascimento" })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Login")
+            @Html.TextBox("login", null, new { @class = "form-control", placeholder = "Login", maxlength = 20 })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Senha")
+            @Html.TextBox("senha", null, new { @class = "form-control", placeholder = "Senha", maxlength = 128, type = "password" })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Email")
+            @Html.TextBox("email", null, new { @class = "form-control", placeholder = "Email", maxlength = 128 })
+        </div>
+        <div class="col-md-7">
+            @Html.Label("Área de Interesse")
+            <select id="select" class="selectpicker" multiple>
+                <option value="1">Administração</option>
+                <option value="2">Arquitetura</option>
+                <option value="4">Artes Cênicas</option>
+                <option value="8">Ciência da Computação</option>
+                <option value="16">Ciências Biológicas</option>
+                <option value="32">Ciências Contábeis</option>
+                <option value="64">Comunicação Social</option>
+                <option value="128">Design de Moda</option>
+                <option value="256">Design de Produto</option>
+                <option value="512">Direito</option>
+                <option value="1024">Distribuição e Logística</option>
+                <option value="2048">Educação Física</option>
+                <option value="4096">Enfermagem</option>
+                <option value="8192">Engenharia</option>
+                <option value="16384">Estética e Cosmética</option>
+                <option value="32768">Farmácia</option>
+                <option value="65536">Fisioterapia</option>
+                <option value="131072">Fonoaudiologia</option>
+                <option value="262144">Fotografia</option>
+                <option value="524288">Gastronomia</option>
+                <option value="1048576">Gestão de Agronegócio</option>
+                <option value="2097152">Gestão Portuária</option>
+                <option value="4194304">Jornalismo</option>
+                <option value="8388608">Marketing</option>
+                <option value="16777216">Medicina</option>
+                <option value="33554432">Medicina Veterinária</option>
+                <option value="67108864">Nutrição</option>
+                <option value="134217728">Odontologia</option>
+                <option value="268435456">Pedagogia</option>
+                <option value="536870912">Psicologia</option>
+                <option value="1073741824">Publicidade</option>
+                <option value="2147483648">Relações Internacionais</option>
+                <option value="4294967296">Sistemas de Informação</option>
+            </select>
+        </div>
+
+
+        <center>
+            <div class="col-md-7">
+                <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
+                <button onclick="Limpar()" style="margin-top: 20px" class="btn btn-danger">Limpar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+
+@*<div class="row">
+        <div class="col-md-4">
+            <p><a class="btn btn-default" href="">Leia Mais &raquo;</a></p>
+        </div>
+    </div>*@
+
+
+
+
+
+<script>
+    $(document).ready(function () {
+        //  EsconderMenu();
+        $("#data_nascimento").mask("99/99/9999");
+    });
+
+    //EsconderMenu = function () {
+    //    $("#corpo_geral").css("display", "none");
+    //}
+
+    //Logar = function () {
+    //    login = $("#usuario").val();
+    //    senha = $("#senha").val();
+    //    console.log(login + " " + senha);
+    //    $.post(UrlLogar, { login, senha }, function (res) {
+    //        console.log(res);
+    //        if (res.Data != true) {
+    //            $("#msg_erro").css("display", "");
+    //        } else {
+    //            window.location = res.ContentType;
+    //        }
+    //    });
+    //}
+
+
+</script>

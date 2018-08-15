@@ -22,8 +22,9 @@ namespace SistemaVendas.Controllers
         {
             var a = new NetCoders();
             var b = new PagSeguro();
-          //  b.CheckOut();
-          //  a.CarregaPosts();
+            //  b.CheckOut();
+            Session.Add("Usuario",new Usuario());
+            //  a.CarregaPosts();
             //string titulo;
             //using (WebClient client = new WebClient())
             //{
@@ -48,9 +49,10 @@ namespace SistemaVendas.Controllers
         public ActionResult Logar(string login, string senha)
         {
             var result = new JsonResult();
-            var vendedor = _session.Query<Vendedor>().Where(x => x.Login.ToLower() == login.ToLower() && x.Senha == senha).FirstOrDefault();
-            if (vendedor != null)
+            var usuario = _session.Query<Usuario>().Where(x => x.Login.ToLower() == login.ToLower() && x.Senha == senha).FirstOrDefault();
+            if (usuario != null)
             {
+                Session.Add("Usuario", usuario);
                 result.Data = true;
                 result.ContentType = "/PainelGeral/Index";
             }

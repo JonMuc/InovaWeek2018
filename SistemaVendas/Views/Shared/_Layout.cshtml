@@ -11,10 +11,16 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
-</head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
-<body>
-    @*<div class="navbar navbar-inverse navbar-fixed-top">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-pt_BR.min.js"></script>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div id="corpo_geral" class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,12 +40,15 @@
                 </ul>
             </div>
         </div>
-    </div>*@
+    </div>
+</head>
+
+<body>
     <div id="corpo_conteudo" class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Inova</p>
+            <p>&copy; @DateTime.Now.Year - Trabalho Eng Soft II</p>
         </footer>
     </div>
 

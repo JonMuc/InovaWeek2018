@@ -10,7 +10,10 @@ namespace SistemaVendas
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                        "~/Scripts/jquery-3.1.1.min.js",
-                       "~/Scripts/jquery.mask.min.js"));
+                       "~/Scripts/jquery.mask.min.js",
+                       "~/Scripts/bootstrap-select/1.12.4/js/bootstrap-select.min.js",
+                       "~/Scripts/bootstrap-select/1.12.4/js/i18n/defaults-pt_BR.min.js",
+                      "~/Scripts/bootstrap-select/1.12.4/css/bootstrap-select.min.css"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                       "~/Scripts/jquery.validate.min.js",
@@ -19,8 +22,6 @@ namespace SistemaVendas
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
-            // Use the development version of Modernizr to develop with and learn from. Then, when you're
-            // ready for production, use the build tool at https://modernizr.com to pick only the tests you need.
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 

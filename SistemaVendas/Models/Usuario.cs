@@ -16,6 +16,7 @@ namespace SistemaVendas.Models
         public virtual string Senha { get; set; }
         public virtual int Curso { get; set; }
         public virtual long AreasInteresse { get; set; }
-
+        public virtual long NotaAvaliacao { get; set; }
+        public virtual long QuantidadeAvaliacao { get; set; }
     }
 }
