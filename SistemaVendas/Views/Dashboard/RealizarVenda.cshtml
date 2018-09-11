@@ -1,0 +1,267 @@
+﻿@{
+    ViewBag.Title = "Realizar Venda";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlSalvarVenda = '@Url.Action("SalvarVenda", "PainelGeral")';
+    UrlBuscarProduto = '@Url.Action("BuscarProduto", "PainelGeral")';
+    UrlAdicionarProduto = '@Url.Action("AdicionarProduto", "PainelGeral")';
+    UrlRealizarVenda = '@Url.Action("FinalizarVenda", "PainelGeral")';
+    UrlBuscarCliente = '@Url.Action("BuscarCliente", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    @Html.Label("Dados do Produto")
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Hidden("idProduto")
+            @Html.Label("Nome Produto")
+            @Html.TextBox("nome_produto", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Descrição")
+            @Html.TextBox("descricao", null, new { @class = "form-control", disabled = "disabled", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Preço")
+            @Html.TextBox("preco", null, new { @class = "form-control", disabled = "disabled" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Quantidade")
+            @Html.TextBox("quantidade", null, new { @class = "form-control", onchange = "CalcularProdut()", onclick = "CalcularProdut()", maxlength = 128, placeholder = "Quantidade" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Total")
+            @Html.TextBox("total", null, new { @class = "form-control", disabled = "disabled" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Total da Compra")
+            @Html.TextBox("total_compra", null, new { @class = "form-control", disabled = "disabled" })
+        </div>
+        <center>
+            <h3 id="busca_suce" style="display:none; margin-top: 20px"><text>Produto adicionado.</text></h3>
+            <h3 id="busca_fals" style="display:none; margin-top: 20px"><text>Produto não encontrado.</text></h3>
+        </center>
+        <center>
+            <div class="col-md-14">
+                <button onclick="BuscarProduto()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
+                <button onclick="AdicionarItem()" style="margin-top: 20px" class="btn btn-success">Adicionar</button>
+                <button onclick="LimparLista()" style="margin-top: 20px" class="btn btn-danger">Limpar Lista</button>
+            </div>
+        </center>
+    </div>
+</div>
+<center>
+    <h3 id="compra_buscarProduto" style="display:none; margin-top: 20px"><text>Informe produto e quantidade para adicionar ao carrinho.</text></h3>
+    <h3 id="compra_clienteCPF" style="display:none; margin-top: 20px"><text>Informe CPF do cliente.</text></h3>
+    <h3 id="compra_cliente" style="display:none; margin-top: 20px"><text>Selecione um cliente e produto.</text></h3>
+</center>
+<div class="jumbotron">
+    @Html.Label("Dados do Cliente")
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Hidden("idCliente")
+            @Html.Label("CPF")
+            @Html.TextBox("cpf", null, new { @class = "form-control", placeholder = "CPF", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Nome")
+            @Html.TextBox("nome", null, new { @class = "form-control", disabled = "disabled", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Endereço")
+            @Html.TextBox("endereco", null, new { @class = "form-control", disabled = "disabled", maxlength = 128 })
+        </div>
+        <div style="display:none" id="total_fim" class="col-md-4">
+            @Html.Label("Valor da Compra")
+            @Html.TextBox("valor_compra", null, new { @class = "form-control", disabled = "disabled", maxlength = 128 })
+        </div>
+        <div style="display:none" id="data_fim" class="col-md-8">
+            @Html.Label("Data da Compra")
+            @Html.TextBox("data_compra", null, new { @class = "form-control", disabled = "disabled", maxlength = 128 })
+        </div>
+        <center>
+            <h3 id="compra_salvo" style="display:none; margin-top: 20px"><text>Compra realizada com sucesso.</text></h3>
+        </center>
+        <center>
+            <div class="col-md-14">
+                <button onclick="BuscarCliente()" style="margin-top: 20px" class="btn btn-success">Buscar</button>
+                <button onclick="RealizarVenda()" style="margin-top: 20px" class="btn btn-danger">Realizar Venda</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+<script>
+    ListaProdutos = [0, 0, 0, 0, 0];
+    ListaQuantidade = [0, 0, 0, 0, 0];
+    ValorCompra = 0;
+
+
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: true });
+    });
+
+    Limpar = function () {
+        $("#total").val("");
+        $("#quantidade").val("");
+        $("#preco").val("");
+        $("#descricao").val("");
+        $("#nome_produto").val("");
+    }
+
+    BuscarCliente = function () {
+        cpf = $("#cpf").val();
+        if (cpf == "") {
+            $("#compra_clienteCPF").css("display", "");
+        } else {
+            $("#compra_clienteCPF").css("display", "none");
+            $("#compra_cliente").css("display", "none");
+        }
+        $.post(UrlBuscarCliente, { cpf }, function (res) {
+            if (res.Data != null) {
+                $("#nome").val(res.Data.Pessoa.Nome);
+                $("#endereco").val(res.Data.Endereco);
+                $("#idCliente").val(res.Data.Id);
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+    }
+
+    LimparLista = function () {
+        for (x = 0; x < 5; x++) {
+            ListaProdutos[x] = 0;
+        }
+        for (x = 0; x < 5; x++) {
+            ListaQuantidade[x] = 0;
+        }
+    }
+
+    AdicionarItem = function () {
+        idProduto = $("#idProduto").val();
+        quantidade = $("#quantidade").val();
+        if (idProduto == "" || quantidade == "") {
+            $("#compra_buscarProduto").css("display", "");
+        } else {
+            $("#compra_buscarProduto").css("display", "none");
+            $("#busca_suce").css("display", "");
+            for (x = 0; x < 5; x++) {
+                if (ListaProdutos[x] == null || ListaProdutos[x] == "" || ListaProdutos[x] == 0) {
+                    ListaProdutos[x] = idProduto;
+                    x = 99;
+                }
+            }
+            for (x = 0; x < 5; x++) {
+                if (ListaQuantidade[x] == null || ListaQuantidade[x] == "" || ListaQuantidade[x] == 0) {
+                    ListaQuantidade[x] = quantidade;
+                    x = 99;
+                }
+            }
+            Limpar();
+            ValorTotal();
+        }
+    }
+
+    ValorTotal = function () {
+        total = 0;
+        for (x = 0; x < 5; x++) {
+            if (ListaProdutos[x] == null || ListaProdutos[x] == "" || ListaProdutos[x] == 0 || ListaQuantidade[x] == null || ListaQuantidade[x] == "" || ListaQuantidade[x] == 0) {
+            } else {
+                total += ListaProdutos[x] * ListaQuantidade[x];
+            }
+        }
+        $("#total_compra").val("R$ " + ValorCompra + ",00");
+    }
+
+    CalcularProdut = function () {
+        quantidade = $("#quantidade").val();
+        valor = $("#preco").val();
+        $("#total").val("R$ " + quantidade * valor + ",00");
+        ValorCompra += (quantidade * valor);
+    }
+
+    //Salvar = function () {
+    //    valorUnitario = $("#valor_unitario").val();
+    //    descricao = $("#descricao").val();
+    //    nome = $("#nome").val();
+    //    quantidade = $("#quantidade").val();
+    //    cnpj = $("#cnpj").val();
+    //    dataCompra = $("#data_compra").val();
+    //    razaoSocial = $("#razao_social").val();
+    //    valorCompra = $("#valor_compra").val();
+    //    $.post(UrlSalvarCompra, { valorUnitario, descricao, nome, quantidade, cnpj, dataCompra, razaoSocial, valorCompra }, function (res) {
+    //        if (res.Data == true) {
+    //            $("#compra_salvo").css("display", "");
+    //        } else {
+    //            $("#compra_salvo").css("display", "none");
+    //        }
+    //    });
+    //}
+
+    BuscarProduto = function () {
+        nomeProduto = $("#nome_produto").val();
+        if (nomeProduto == "") {
+
+        }
+        $.post(UrlBuscarProduto, { nomeProduto }, function (res) {
+            if (res.Data != null) {
+                $("#descricao").val(res.Data.Descricao);
+                $("#preco").val(res.Data.Valor);
+                $("#idProduto").val(res.Data.Id);
+                $("#busca_fals").css("display", "none");
+            } else {
+                $("#busca_fals").css("display", "");
+            }
+        });
+    }
+
+    RealizarVenda = function () {
+        idCliente = $("#idCliente").val();
+        var prod;
+        var quant;
+        for (x = 0; x < 5; x++) {
+            if (ListaProdutos[x] == null || ListaProdutos[x] == "" || ListaProdutos[x] == 0) {
+                prod = 1;
+            } else {
+                prod = 0;
+                x = 7;
+            }
+        }
+        for (x = 0; x < 5; x++) {
+            if (ListaQuantidade[x] == null || ListaQuantidade[x] == "" || ListaQuantidade[x] == 0) {
+                quant = 1;
+            } else {
+                quant = 0;
+                x = 7;
+            }
+        }
+        if (idCliente != "" && prod != 1 && quant != 1) {
+            $("#compra_cliente").css("display", "none");
+            $("#compra_clienteCPF").css("display", "none");
+            $.post(UrlRealizarVenda, { idCliente, ListaProdutos, ListaQuantidade }, function (res) {
+                if (res.Data != null) {
+                    $("#compra_salvo").css("display", "");
+                    $("#data_fim").css("display", "");
+                    $("#total_fim").css("display", "");
+                    $("#valor_compra").val("R$ " + ValorCompra + ",00");
+                    $("#data_compra").val(Date(Date.parse(res.Data.DataVenda, "MM/dd/yyyy")));
+                    ValorCompra = 0;
+                    window.location = res.Data.url;
+                } else {
+                    // window.location = res.ContentType;
+                }
+            });
+        } else {
+            $("#compra_cliente").css("display", "");
+        }
+
+    }
+</script>
+
+
+
+

@@ -1,6 +1,6 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
+    background-image: linear-gradient(to right, aliceblue,#f0effe);
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -22,3 +22,4 @@ select,
 textarea {
     max-width: 100%;
 }
+

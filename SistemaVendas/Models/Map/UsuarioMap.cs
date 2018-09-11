@@ -13,7 +13,7 @@ namespace SistemaVendas.Models.Map
 
         public UsuarioMap()
         {
-            Id<int>(x => x.Id, map => {
+            Id<long>(x => x.Id, map => {
                 map.Generator(Generators.Increment);
             });
             Property<long>(x => x.AreasInteresse);

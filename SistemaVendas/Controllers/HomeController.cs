@@ -23,7 +23,7 @@ namespace SistemaVendas.Controllers
             var a = new NetCoders();
             var b = new PagSeguro();
             //  b.CheckOut();
-            Session.Add("Usuario",new Usuario());
+            //Session.Add("Usuario",new Usuario());
             //  a.CarregaPosts();
             //string titulo;
             //using (WebClient client = new WebClient())
@@ -54,13 +54,33 @@ namespace SistemaVendas.Controllers
             {
                 Session.Add("Usuario", usuario);
                 result.Data = true;
-                result.ContentType = "/PainelGeral/Index";
+                result.ContentType = "/Dashboard/Index";
             }
             else
             {
                 result.Data = false;
             }
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Cadastro()
+        {
+            Response.BufferOutput = false;
+            Response.Redirect("/Cadastro/Index");
+            //var result = new JsonResult();
+            //    result.Data = true;
+            //    result.ContentType = "/Cadastro/Index";
+            return Json(Response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult LogarCadastro()
+        {
+            Response.BufferOutput = false;
+            Response.Redirect("/Dashboard/Index");
+            //var result = new JsonResult();
+            //    result.Data = true;
+            //    result.ContentType = "/Cadastro/Index";
+            return Json(Response, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetUsers()
