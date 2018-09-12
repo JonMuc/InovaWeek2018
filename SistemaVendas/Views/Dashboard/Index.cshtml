@@ -14,6 +14,7 @@
     UrlBuscarListaSubComentarios = '@Url.Action("BuscarSubComentarios", "Dashboard")';
     UrlRealizarAvaliacao = '@Url.Action("RealizarAvaliacao", "Dashboard")';
     UrlBuscarNome = '@Url.Action("BuscarUsuario", "Dashboard")';
+    UrlBuscarUltimasPostagemUsuarios= '@Url.Action("BuscarUltimasPotagens", "Dashboard")';
     UrlBuscarUsuarioNome = '@Url.Action("BuscarUsuarioNome", "Dashboard")';
 </script>
 
@@ -39,18 +40,16 @@
             </div>
         </div>
         <div class="col-md-12" style="margin-top:5%">
-            @*@foreach (var item in Model.ListaPostagem)
-            {
-                    @Html.DisplayFor(modelItem => item.Conteudo)
-                    @Html.DisplayFor(modelItem => item.Usuario.Nome)
-            }*@
             <div id="corpo_lista">
 
             </div>
         </div>
     </div>
     <div class="col-md-2">
-        <div class="col-md-12" style="background-color:blue; height: 50px">
+        <div class="col-md-12" style="text-align:center">
+                <span class="col-md-12" style="font-size: 1.7em; padding: 5px;">Últimas Notícias</span>
+        </div>
+        <div id="feed_comentarios">
 
         </div>
     </div>
@@ -61,6 +60,7 @@
 <script>
     $(document).ready(function () {
         PopularListar();
+        BuscarFeed();
         BuscarNome();
     });
     var statusComentario = false;
@@ -71,6 +71,21 @@
         $.post(UrlBuscarNome, function (res) {
             console.log(res);
             $("#nome_usuario").append("<span style='font-size: 2em; color: white;'>" + res.Data.Nome + "</span>");
+        });
+    }
+
+    BuscarFeed = function () {
+        $.post(UrlBuscarUltimasPostagemUsuarios, function (res) {
+            console.log(res);
+            if (res.Data != null) {
+                for (x = 0; x < res.Data.length; x++) {
+                    if (res.Data[x].Avaliei) {
+                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1em; color: black;'>" + res.Data[x].Usuario.Nome + " curtiu sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
+                    } else {
+                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1em; color: black;'>" + res.Data[x].Usuario.Nome + " comentou sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
+                    }
+                }
+            }
         });
     }
 

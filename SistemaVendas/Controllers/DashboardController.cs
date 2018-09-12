@@ -146,6 +146,33 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult BuscarUltimasPotagens()
+        {
+            var result = new JsonResult();
+            var usuario = (Usuario)Session["Usuario"];
+            var IdsPostagens = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id).Select(x => x.Id);
+            var postagem = _session.Query<Postagem>().Where(x => x.ID_Usuario != usuario.Id).Where(x => IdsPostagens.Contains(x.ID_Resposta)).OrderByDescending(x => x.Data).Take(10);
+            var IdsAvaliacao = _session.Query<Avaliacao>().Where(x => IdsPostagens.Contains(x.ID_Postagem)).Where(x => x.ID_Usuario != usuario.Id).Select(x => x.ID_Postagem);
+            var listaAvaliado = _session.Query<Postagem>().Where(x => IdsAvaliacao.Contains(x.Id));
+            var aux = postagem.AsEnumerable().Union(listaAvaliado);
+            foreach (Postagem item in aux)
+            {
+                item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
+                item.DataString = item.Data.ToLocalTime().ToString();
+                item.QuantidadeResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).Count();
+                item.ListaResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).ToList();
+                item.Avaliei = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario != usuario.Id).Any();
+                if (item.Avaliei)
+                {
+                    var buscar = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id).Where(x => x.ID_Usuario != usuario.Id).Select(x => x.ID_Usuario);
+                    item.Usuario = _session.Query<Usuario>().Where(x => buscar.Contains(x.Id)).FirstOrDefault();
+                    item.NotaUsuario = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && buscar.Contains(x.ID_Usuario)).FirstOrDefault().Nota;
+                }
+            }
+            result.Data = aux;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult BuscarUsuarioNome(string nome)
         {
             var result = new JsonResult();
