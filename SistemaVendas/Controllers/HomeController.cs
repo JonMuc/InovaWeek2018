@@ -63,6 +63,7 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+
         public JsonResult GetUsers()
         {
             var x = new JsonResult();
