@@ -39,6 +39,31 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult DirecionarAposCadastro()
+        {
+            Response.BufferOutput = false;
+            Response.Redirect("/Dashboard/Index");
+            return Json(Response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Salvar(string usuario, string senha, string nome, DateTime? data, string email, long curso, List<long> area)
+        {
+            var result = new JsonResult();
+            var novoUsuario = new Usuario();
+            novoUsuario.Nome = nome;
+            novoUsuario.Login = usuario;
+            novoUsuario.Senha = senha;
+            novoUsuario.DataNascimento = data.Value;
+            novoUsuario.Email = email;
+            novoUsuario.Curso = curso;
+            novoUsuario.AreasInteresse = area.Sum();
+            _session.Save(novoUsuario);
+            result.Data = true;
+            result.ContentType = "/Dashboard/Index";
+            result.Data = false;
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult GetUsers()
         {
             var x = new JsonResult();

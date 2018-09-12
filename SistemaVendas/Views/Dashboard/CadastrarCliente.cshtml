@@ -1,0 +1,155 @@
+﻿@{
+    ViewBag.Title = "Cadastrar Cliente";
+    ViewBag.Body = "Atualizar Cliente";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlAtualizarCliente = '@Url.Action("AtualizarCliente", "PainelGeral")';
+    UrlBuscarParaEdicao = '@Url.Action("BuscarClienteId", "PainelGeral")';
+    UrlBuscarClientes= '@Url.Action("ListarClientes", "PainelGeral")';
+    UrlSalvarCliente= '@Url.Action("SalvarCliente", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Label("Nome")
+            @Html.Hidden("Id")
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Data de Nascimento")
+            @Html.TextBox("data_nascimento", null, new { @class = "form-control", placeholder = "Nascimento" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("CPF")
+            @Html.TextBox("cpf", null, new { @class = "form-control", placeholder = "CPF", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Telefone")
+            @Html.TextBox("telefone", null, new { @class = "form-control", placeholder = "Telefone", maxlength = 128 })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("Endereço")
+            @Html.TextBox("endereco", null, new { @class = "form-control", placeholder = "Endereço", maxlength = 128 })
+        </div>
+        <center>
+            <h3 id="cliente_error" style="display:none; margin-top: 20px"><text>Informe todo os campos.</text></h3>
+            <h3 id="cliente_salvo" style="display:none; margin-top: 20px"><text>Cliente salvo com sucesso.</text></h3>
+        </center>
+        <center>
+            <div class="col-md-14">
+                <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
+                <button onclick="Limpar()" style="margin-top: 20px" class="btn btn-danger">Limpar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+
+<h2>@ViewBag.Body.</h2>
+<div class="jumbotron" id="div_lista">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">CPF</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpo_lista"></tbody>
+    </table>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#data_nascimento').mask('00/00/0000');
+        $('#cpf').mask('000.000.000-00', { reverse: true });
+        $('#telefone').mask('000000000');
+        PopularListar();
+    });
+
+    EditarItem = function (id) {
+        $.post(UrlBuscarParaEdicao, {id} ,function (res) {
+            if (res.Data != null) {
+                $("#Id").val(res.Data.Id);
+                $("#telefone").val(res.Data.Telefone);
+                $("#nome").val(res.Data.Pessoa.Nome);
+                $("#data_nascimento").val(Date(Date.parse(res.Data.Pessoa.DataNascimento, "MM/dd/yyyy")));
+                $("#cpf").val(res.Data.CPF);
+                $("#endereco").val(res.Data.Endereco);
+                }
+            });
+    }
+
+    PopularListar = function () {
+        $.post(UrlBuscarClientes, function (res) {
+            if (res.Data != null) {
+                for (x = 0; x < res.Data.length; x++) {
+                    var cont = x + 1;
+                    $("#corpo_lista").append("<tr> <th scope = 'row' >" + cont + "</th> <td>" + res.Data[x].Pessoa.Nome + "</td> <td>" + res.Data[x].CPF  + "</td> <td><button onclick='EditarItem(" + res.Data[x].Id + ")' type='button' class='btn btn-danger'>Editar</button></td></tr>");
+                }
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+        //$("#corpo_lista").append("<tr> <th scope = 'row' > 1</th> <td>Mark</td> <td>Otto</td> <td><button type='button' class='btn btn-danger'>Estornar</button></td></tr>");
+    }
+
+    Limpar = function () {
+        $("#telefone").val("");
+        $("#nome").val("");
+        $("#data_nascimento").val("");
+        $("#cpf").val("");
+        $("#endereco").val("");
+        $("#Id").val("");
+    }
+
+    Salvar = function () {
+        telefone = $("#telefone").val();
+        nome = $("#nome").val();
+        data = $("#data_nascimento").val();
+        cpf = $("#cpf").val();
+        id = $("#Id").val();
+        endereco = $("#endereco").val();
+        if (telefone == "" || nome == "" || data == "" || cpf == "" || endereco == "") {
+            $("#cliente_error").css("display", "");
+            $("#cliente_salvo").css("display", "none");
+        } else {
+            if (id != "") {
+                $.post(UrlAtualizarCliente, { id, telefone, cpf, endereco, nome, data }, function (res) {
+                    if (res.Data == true) {
+                        location.reload();
+                        $("#Id").val("");
+                        $("#cliente_salvo").css("display", "");
+                        $("#cliente_error").css("display", "none");
+                    } else {
+                        $("#cliente_error").css("display", "");
+                        $("#cliente_salvo").css("display", "none");
+                    }
+                });
+            } else {
+                $.post(UrlSalvarCliente, { telefone, cpf, endereco, nome, data }, function (res) {
+                    if (res.Data == true) {
+                        location.reload();
+                        $("#Id").val("");
+                        $("#cliente_salvo").css("display", "");
+                        $("#cliente_error").css("display", "none");
+                    } else {
+                        $("#cliente_error").css("display", "");
+                        $("#cliente_salvo").css("display", "none");
+                    }
+                });
+            }
+        }
+    }
+</script>
+
+
+
+

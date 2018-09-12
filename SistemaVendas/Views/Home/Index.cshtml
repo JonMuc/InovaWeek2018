@@ -56,8 +56,8 @@
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition login-page fundo">
-    <div class="hold-transition login-page fundo"></div>
+<body id="corpo" class="hold-transition login-page fundo">
+    <div class="hold-transition login-page"></div>
         <div class="login-box" style="z-index: 1">
         
             <div class="login-logo" style="color:#ffffff">
@@ -71,7 +71,7 @@
                     <div class="form-group has-feedback">
 
                         <input type="text" class="form-control" placeholder="Usuário" id="usuario">
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
 
                     </div>
                     <div class="form-group has-feedback">
@@ -109,8 +109,7 @@
                 <!-- /.social-auth-links -->
 
                 <a href="#">Esqueci minha senha</a><br>
-                <a href="register.html" class="text-center">Quero me resgistrar</a>
-            
+                <a @Html.ActionLink("Quero me registrar", "Cadastro", "Home")</a>
             </div>
             <!-- /.login-box-body -->
         </div>
@@ -122,13 +121,13 @@
         <!-- iCheck -->
         <script src="../../plugins/iCheck/icheck.min.js"></script>
         <script>
-            $(function () {
-                $('input').iCheck({
-                    checkboxClass: 'icheckbox_square-blue',
-                    radioClass: 'iradio_square-blue',
-                    increaseArea: '20%' /* optional */
-                });
-            });
+            //$(function () {
+            //    $('input').iCheck({
+            //        checkboxClass: 'icheckbox_square-blue',
+            //        radioClass: 'iradio_square-blue',
+            //        increaseArea: '20%' /* optional */
+            //    });
+            //});
         </script>
     
 </body>
@@ -138,6 +137,8 @@
 <script>
     $(document).ready(function () {
         EsconderMenu();
+        $("#botoes_top").css("display", "none");
+
     });
 
     EsconderMenu = function () {
@@ -149,12 +150,9 @@
         senha = $("#senha").val();
         console.log(login + " " + senha);
         $.post(UrlLogar, { login, senha }, function (res) {
-            console.log(res);
             if (res.Data != true) {
                 $("#msg_erro").css("display", "");
-
             } else {
-                alert("ola");
                 window.location = res.ContentType;
             }
         });

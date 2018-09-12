@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "Cadastrar Vendedor";
+    ViewBag.Body = "Atualizar Vendedor";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+<script>
+    UrlSalvarVendedor = '@Url.Action("SalvarVendedor", "PainelGeral")';
+    UrlListarVendedor = '@Url.Action("ListarVendedor", "PainelGeral")';
+    UrlVendedorId = '@Url.Action("BuscarVendedorId", "PainelGeral")';
+    UrlAtualizarVendedor = '@Url.Action("AtualizarVendedor", "PainelGeral")';
+</script>
+
+<div class="jumbotron">
+    <div class="col-md-14 row">
+        <div class="col-md-4">
+            @Html.Hidden("Id")
+            @Html.Label("Nome")
+            @Html.TextBox("nome", null, new { @class = "form-control", placeholder = "Nome", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Data de Nascimento")
+            @Html.TextBox("data_nascimento", null, new { @class = "form-control", placeholder = "Nascimento" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Setor")
+            @Html.TextBox("setor", null, new { @class = "form-control", placeholder = "Setor", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Salário")
+            @Html.TextBox("salario", null, new { @class = "form-control", placeholder = "Salário", maxlength = 20 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Usuário")
+            @Html.TextBox("usuario", null, new { @class = "form-control", placeholder = "Usuário", maxlength = 128 })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("Senha")
+            @Html.TextBox("senha", null, new { @class = "form-control", placeholder = "Senha", maxlength = 128, type = "password" })
+        </div>
+        <center style="margin-top: 20px">
+            <h3 id="vendedor_erro" style="display:none"><text>Informe todo os campos.</text></h3>
+            <h3 id="vendedor_salvo" style="display:none"><text>Vendedor salvo com sucesso.</text></h3>
+        </center>
+        <center>
+            <div class="col-md-14">
+                <button onclick="Salvar()" style="margin-top: 20px" class="btn btn-success">Salvar</button>
+                <button onclick="Limpar()" style="margin-top: 20px" class="btn btn-danger">Limpar</button>
+            </div>
+        </center>
+    </div>
+</div>
+
+<h2>@ViewBag.Body.</h2>
+<div class="jumbotron" id="div_lista">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Setor</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="corpo_lista"></tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#salario').mask("000000000", { reverse: true });
+        $('#data_nascimento').mask('00/00/0000');
+        PopularListar();
+    });
+
+    EditarItem = function (id) {
+        $.post(UrlVendedorId, { id }, function (res) {
+            if (res.Data != null) {
+                $("#Id").val(res.Data.Id);
+                $("#nome").val(res.Data.Pessoa.Nome);
+                $("#setor").val(res.Data.Setor);
+                $("#data_nascimento").val(Date(Date.parse(res.Data.Pessoa.DataNascimento, "MM/dd/yyyy")));
+                $("#senha").val("");
+                $("#salario").val(res.Data.Salario);
+                $("#usuario").val(res.Data.Login);
+            }
+        });
+    }
+
+    PopularListar= function () {
+        $.post(UrlListarVendedor, function (res) {
+            if (res.Data != null) {
+                for (x = 0; x < res.Data.length; x++) {
+                    var cont = x + 1;
+                    $("#corpo_lista").append("<tr> <th scope = 'row' >" + cont + "</th> <td>" + res.Data[x].Pessoa.Nome + "</td> <td>" + res.Data[x].Setor + "</td> <td><button onclick='EditarItem(" + res.Data[x].Id + ")' type='button' class='btn btn-danger'>Editar</button></td></tr>");
+                }
+            } else {
+                // window.location = res.ContentType;
+            }
+        });
+        //$("#corpo_lista").append("<tr> <th scope = 'row' > 1</th> <td>Mark</td> <td>Otto</td> <td><button type='button' class='btn btn-danger'>Estornar</button></td></tr>");
+    }
+
+    Limpar = function () {
+        $("#senha").val("");
+        $("#nome").val("");
+        $("#data_nascimento").val("");
+        $("#salario").val("");
+        $("#setor").val("");
+        $("#usuario").val("");
+        $("#Id").val("");
+    }
+
+    Salvar = function () {
+        senha = $("#senha").val();
+        nome = $("#nome").val();
+        data = $("#data_nascimento").val();
+        salario = $("#salario").val();
+        setor = $("#setor").val();
+        id = $("#Id").val();
+        usuario = $("#usuario").val();
+        if (senha == "" || nome == "" || data == "" || salario == "" || setor == "" || usuario == "") {
+            $("#vendedor_erro").css("display", "");
+            $("#vendedor_salvo").css("display", "none");
+        } else {
+            $("#vendedor_erro").css("display", "none");
+            if (id != "") {
+                $.post(UrlAtualizarVendedor, { id, usuario, senha, setor, salario, nome, data }, function (res) {
+                    if (res.Data == true) {
+                        location.reload();
+                        $("#vendedor_salvo").css("display", "");
+                        Limpar();
+                    } else {
+                        $("#vendedor_erro").css("display", "");
+                        $("#vendedor_salvo").css("display", "none");
+                    }
+                    $("#Id").val("");
+                });
+            } else {
+                $.post(UrlSalvarVendedor, { usuario, senha, setor, salario, nome, data }, function (res) {
+                    if (res.Data == true) {
+                        location.reload();
+                        $("#vendedor_salvo").css("display", "");
+                        Limpar();
+                    } else {
+                        $("#vendedor_erro").css("display", "");
+                        $("#vendedor_salvo").css("display", "none");
+                    }
+                    $("#Id").val("");
+                });
+            }
+           
+        }
+
+    }
+
+
+</script>
+
+
+
+

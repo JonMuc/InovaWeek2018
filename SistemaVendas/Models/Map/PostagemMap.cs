@@ -13,15 +13,18 @@ namespace SistemaVendas.Models.Map
 
         public PostagemMap()
         {
-            Id<int>(x => x.Id, map => {
+            Id<long>(x => x.Id, map => {
                 map.Generator(Generators.Increment);
             });
-            Property<string>(x => x.Conteudo);
+            Property<string>(x => x.Conteudo, map => {
+                map.Length(20000);     
+            });
             Property<DateTime>(x => x.Data);
-            Property<int>(x => x.ID_Resposta);
-            Property<int>(x => x.ID_Usuario);
-            Property<int>(x => x.Nota);
-            Property<int>(x => x.NumAvaliacoes);
+            Property<bool>(x => x.IsResposta);
+            Property<long>(x => x.ID_Resposta);
+            Property<long>(x => x.ID_Usuario);
+            Property<long>(x => x.Nota);
+            Property<long>(x => x.NumAvaliacoes);
 
             //OneToOne(x => x.Pessoa, map =>
             //{
