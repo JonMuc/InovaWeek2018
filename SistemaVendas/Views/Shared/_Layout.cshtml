@@ -20,49 +20,85 @@
     <!-- (Optional) Latest compiled and minified JavaScript translation files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-pt_BR.min.js"></script>
 
-<body>
-    <div class="navbar navbar-inverse navbar-fixed-top" style="opacity:0.8;">
-        <div id="botoes_top" class="col-lg-12">
-            <div style="margin-top: 0.2%;" id="nome_usuario" class="col-md-3">
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top" style="opacity:0.8;">
+            <div id="botoes_top" class="col-lg-12">
+                <div style="margin-top: 0.2%;" id="nome_usuario" class="col-md-3">
 
-            </div>
-            <div class="col-md-7">
-                <div class="col-md-10">
-                    <input type="text" style="width:100%" id="filtro_nome_usuario" class="form-control" placeholder="Procure por alguem.">
                 </div>
-                <div class="col-md-2" style="margin-top: 0.6%">
-                    <button type="submit" onclick="PesquisarUsuario()" class="btn btn-secondary btn-lg btn-block">Pesquisar</button>
+                <div class="col-md-7">
+                    <div class="col-md-10">
+                        <input type="text" style="width:100%" id="filtro_nome_usuario" class="form-control" placeholder="Procure por alguem.">
+                    </div>
+                    <div class="col-md-2" style="margin-top: 0.6%">
+                        <button type="submit" onclick="PesquisarUsuario()" data-target="#ModalPesquisa" data-toggle="modal" class="btn btn-secondary btn-lg btn-block">Pesquisar</button>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <a style="font-size: 1.7em;color: white;" class="btn btn-dark pull-right" @Html.ActionLink("Sair", "SairSessao", "Dashboard")</a>
                 </div>
             </div>
-            <div class="col-md-2">
-                <a style="font-size: 1.7em;color: white;" class="btn btn-dark pull-right" @Html.ActionLink("Sair", "SairSessao", "Dashboard")</a>
+            <div id="corpo_geral" class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*@Html.ActionLink("Realizar Venda", "RealizarVenda", "PainelGeral", new { area = "" }, new { @class = "navbar-brand" })*@
+                </div>
+                <div class="navbar-collapse collapse">
+                    @*<ul class="nav navbar-nav">
+                            <li>@Html.ActionLink("Cadastrar Cliente", "CadastrarCliente", "PainelGeral")</li>
+                            <li>@Html.ActionLink("Relatório Vendedor", "RelatorioVendedor", "PainelGeral")</li>
+                            <li>@Html.ActionLink("Cadastrar Vendedor", "CadastrarVendedor", "PainelGeral")</li>
+                            <li>@Html.ActionLink("Realizar Compra", "RealizarCompra", "PainelGeral")</li>
+                            <li>@Html.ActionLink("Estornar Venda", "EstornarVenda", "PainelGeral")</li>
+                        </ul>*@
+                </div>
             </div>
         </div>
-        <div id="corpo_geral" class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @*@Html.ActionLink("Realizar Venda", "RealizarVenda", "PainelGeral", new { area = "" }, new { @class = "navbar-brand" })*@
-            </div>
-            <div class="navbar-collapse collapse">
-                @*<ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Cadastrar Cliente", "CadastrarCliente", "PainelGeral")</li>
-                    <li>@Html.ActionLink("Relatório Vendedor", "RelatorioVendedor", "PainelGeral")</li>
-                    <li>@Html.ActionLink("Cadastrar Vendedor", "CadastrarVendedor", "PainelGeral")</li>
-                    <li>@Html.ActionLink("Realizar Compra", "RealizarCompra", "PainelGeral")</li>
-                    <li>@Html.ActionLink("Estornar Venda", "EstornarVenda", "PainelGeral")</li>
-                </ul>*@
-            </div>
+        <div id="corpo_conteudo" class="containr body-content">
+            @RenderBody()
         </div>
-    </div>
-    <div id="corpo_conteudo" class="containr body-content">
-        @RenderBody()
-    </div>
 
-</body>
+    </body>
 </html>
 
+
+<!-- Modal -->
+<div class="modal fade" id="ModalPesquisa" tabindex="-1"  role="dialog" aria-labelledby="ModalPesquisa" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="position: absolute; margin-left: -8%; margin-top: -10%; opacity: 1; width: 18%;" role="document">
+        <div class="modal-content" style="border-radius: 3em;background-image: linear-gradient(to bottom, azure, darkturquoise)">
+            <div class="modal-body">
+                <h4 style="text-align:center">Usuários</h4>
+                <div id="div_conteudo_modal">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
 <script src="~/Scripts/jquery.mask.js"></script>
+
+<script>
+    //$(document).ready(function () {
+    //    BuscarNome();
+    //});
+
+    //PesquisarUsuario = function () {
+    //    console.log("asdasdasd");
+    //    $("#div_conteudo_modal").append("ASDASDASDSA");
+    //    nome = $("#filtro_nome_usuario").val();
+    //    $.post(UrlBuscarUsuarioNome, { nome }, function (res) {
+    //        if (res.Data != null) {
+    //            console.log(res);
+    //        }
+    //    });
+    //}
+
+</script>

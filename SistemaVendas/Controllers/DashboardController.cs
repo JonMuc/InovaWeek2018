@@ -96,12 +96,12 @@ namespace SistemaVendas.Controllers
             avaliacao.Nota = nota;
             _session.Save(avaliacao);
             var postagem = _session.Query<Postagem>().Where(x => x.Id == idPostagem).FirstOrDefault();
-            postagem.Nota =+ nota;
-            postagem.NumAvaliacoes++;
+            postagem.Nota = postagem.Nota + nota;
+            postagem.NumAvaliacoes = postagem.NumAvaliacoes + 1;
             _session.Save(postagem);
             var usuarioPostagem = _session.Query<Usuario>().Where(x => x.Id == postagem.ID_Usuario).FirstOrDefault();
-            usuarioPostagem.NotaAvaliacao += nota;
-            usuarioPostagem.QuantidadeAvaliacao++;
+            usuarioPostagem.NotaAvaliacao = usuarioPostagem.NotaAvaliacao + nota;
+            usuarioPostagem.QuantidadeAvaliacao = usuarioPostagem.QuantidadeAvaliacao + 1;
             _session.Save(usuarioPostagem);
             result.Data = true;
             return Json(result, JsonRequestBehavior.AllowGet);

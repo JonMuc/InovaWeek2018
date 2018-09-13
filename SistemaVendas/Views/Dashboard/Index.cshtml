@@ -47,13 +47,14 @@
     </div>
     <div class="col-md-2">
         <div class="col-md-12" style="text-align:center">
-                <span class="col-md-12" style="font-size: 1.7em; padding: 5px;">Últimas Notícias</span>
+            <span class="col-md-12" style="font-size: 1.7em; padding: 5px;">Últimas Notícias</span>
         </div>
         <div id="feed_comentarios">
 
         </div>
     </div>
 </div>
+
 
 
 <script src="~/Scripts/jquery-3.3.1.js"></script>
@@ -69,14 +70,12 @@
 
     BuscarNome = function () {
         $.post(UrlBuscarNome, function (res) {
-            console.log(res);
             $("#nome_usuario").append("<span style='font-size: 2em; color: white;'>" + res.Data.Nome + "</span>");
         });
     }
 
     BuscarFeed = function () {
         $.post(UrlBuscarUltimasPostagemUsuarios, function (res) {
-            console.log(res);
             if (res.Data != null) {
                 for (x = 0; x < res.Data.length; x++) {
                     if (res.Data[x].Avaliei) {
@@ -96,7 +95,7 @@
                     var lista = res.Data[x].ListaResposta;
                     $("#corpo_lista").append("<div id='corpo_comentario" + x + "' style='border: outset; border-radius: 2em; box-shadow: 0.5em 0.5em lightblue;'" + "class=" + "alert alert-success" + ">" + "<h4 style='font-size: 1.5rem;'  class=" + "alert-heading" + ">" + res.Data[x].Usuario.Nome + "<span style='font-size: 1.3rem;' class='pull-right'>" + res.Data[x].DataString + "</span></h4> " +
                         "<span style='font-size: 1.5rem;' >" + res.Data[x].Conteudo + "</span>" +
-                        "<p>" + "<select style='width: 8%;' onclick=(Avaliar(" + res.Data[x].Id + "," + x +")) class='custom-select btn btn-primary btn-lg' id='selectCurtir" + x +"'><option selected>Avalie</option><option value='1'>Nota 1</option><option value='2'>Nota 2</option><option value='3'>Nota 3</option><option value='4'>Nota 4</option><option value='5'>Nota 5</option></select>" +
+                        "<p>" + "<select style='width: 8%;' onclick=(Avaliar(" + res.Data[x].Id + "," + x + ")) class='custom-select btn btn-primary btn-lg' id='selectCurtir" + x + "'><option selected>Avalie</option><option value='1'>Nota 1</option><option value='2'>Nota 2</option><option value='3'>Nota 3</option><option value='4'>Nota 4</option><option value='5'>Nota 5</option></select>" +
                         "<button type='button'" + "onclick=(FazerComentario(" + x + "," + res.Data[x].Id + ")) class='btn btn-primary btn-lg'>" + res.Data[x].QuantidadeResposta + " Comentarios</button>" + "</p>" + " </div > ");
                     if (res.Data[x].Avaliei) {
                         $("#selectCurtir" + x).val(res.Data[x].NotaUsuario);
@@ -109,10 +108,29 @@
     PesquisarUsuario = function () {
         nome = $("#filtro_nome_usuario").val();
         $.post(UrlBuscarUsuarioNome, { nome }, function (res) {
+            console.log(res);
             if (res.Data != null) {
-                console.log(res);
+                for (x = 0; x < res.Data.length; x++) {
+                    $("#div_conteudo_modal").append("<div style='border-radius:2em;margin-top:3%;border: 1px outset; padding: 10px; box-shadow: 3px 4px turquoise; background-image: linear-gradient(to right, aquamarine, aqua);'><span style='font-size: 1em; color: black;'><b>" + res.Data[x].Nome + "</b></br><b>Curso:</b> " + ObterCurso(res.Data[x].Curso) + "</br><b>Avaliação do Usuário:</b> " + ObterAvaliacaoUsuario(res.Data[x].NotaAvaliacao, res.Data[x].QuantidadeAvaliacao)
+                        + "</br><b>Avaliações realizadas: </b>" + res.Data[x].QuantidadeAvaliacao + "</span><p></p></div>");
+                }
             }
         });
+    }
+
+    ObterAvaliacaoUsuario = function (NotaAvaliacao, QuantidadeAvaliacao) {
+        media = NotaAvaliacao / QuantidadeAvaliacao;
+        if (media > 4) {
+            return "Otimo.";
+        } else if (media > 3 & media < 4) {
+            return "Bom";
+        } else if (media > 2 & media < 3) {
+            return "Regular";
+        } else if (media > 1 & media < 2) {
+            return "Ruim";
+        } else if (media > 0 & media < 1) {
+            return "Péssimo";
+        }
     }
 
     Avaliar = function (idPostagem, linha) {
@@ -136,7 +154,7 @@
                     for (x = 0; x < res.Data.ListaResposta.length; x++) {
                         $("#corpo_comentario" + idLinha).append("<div id='corpo_comentario_sub" + x + "' style='background-image: linear-gradient(#f1f8fc, #dac4f2); border: outset; border-radius: 2em; box-shadow: 0.5em 0.5em #428bca;'" + "class=" + "alert alert-success" + ">" + "<h4 style='font-size: 1.5rem;'  class=" + "alert-heading" + ">" + res.Data.ListaResposta[x].Usuario.Nome + "<span style='font-size: 1.3rem;' class='pull-right'>" + res.Data.ListaResposta[x].DataString + "</span></h4> " +
                             "<span style='font-size: 1.5rem;' >" + res.Data.ListaResposta[x].Conteudo + "</span>" +
-                            "<p>" + "<select style='width: 8%;' onclick=(Avaliar(" + res.Data.ListaResposta[x].Id + "," + x + ")) class='custom-select btn btn-primary btn-lg' id='selectCurtirComent" + x +"'><option selected>Avalie</option><option value='1'>Nota 1</option><option value='2'>Nota 2</option><option value='3'>Nota 3</option><option value='4'>Nota 4</option><option value='5'>Nota 5</option></select>" + "</p>" + " </div > ");
+                            "<p>" + "<select style='width: 8%;' onclick=(Avaliar(" + res.Data.ListaResposta[x].Id + "," + x + ")) class='custom-select btn btn-primary btn-lg' id='selectCurtirComent" + x + "'><option selected>Avalie</option><option value='1'>Nota 1</option><option value='2'>Nota 2</option><option value='3'>Nota 3</option><option value='4'>Nota 4</option><option value='5'>Nota 5</option></select>" + "</p>" + " </div > ");
                         if (res.Data.ListaResposta[x].Avaliei) {
                             $("#selectCurtirComent" + x).val(res.Data.ListaResposta[x].NotaUsuario);
                         }
@@ -157,7 +175,8 @@
             } else {
                 //window.location = res.ContentType;
             }
-        });    }
+        });
+    }
 
     EsconderMenu = function () {
         $("#corpo_geral").css("display", "none");
@@ -185,6 +204,79 @@
                 window.location = res.ContentType;
             }
         });
+    }
+
+
+    ObterCurso = function (valor) {
+        if ((valor - 1) == 0) {
+            return "Administração";
+        } else if ((valor - 2) == 0) {
+            return "Arquitetura";
+        } else if ((valor - 4) == 0) {
+            return "Artes Cênicas";
+        } else if ((valor - 8) == 0) {
+            return "Ciência da Computação";
+        } else if ((valor - 16) == 0) {
+            return "Ciências Biológicas";
+        } else if ((valor - 32) == 0) {
+            return "Ciências Contábeis";
+        } else if ((valor - 64) == 0) {
+            return "Comunicação Social";
+        } else if ((valor - 128) == 0) {
+            return "Design de Moda";
+        } else if ((valor - 256) == 0) {
+            return "Design de Produto";
+        } else if ((valor - 512) == 0) {
+            return "Direito";
+        } else if ((valor - 1024) == 0) {
+            return "Distribuição e Logística";
+        } else if ((valor - 2048) == 0) {
+            return "Educação Física";
+        } else if ((valor - 4096) == 0) {
+            return "Enfermagem";
+        } else if ((valor - 8192) == 0) {
+            return "Engenharia";
+        } else if ((valor - 16384) == 0) {
+            return "Estética e Cosmética";
+        } else if ((valor - 32768) == 0) {
+            return "Farmácia";
+        } else if ((valor - 65536) == 0) {
+            return "Fisioterapia";
+        } else if ((valor - 131072) == 0) {
+            return "Fonoaudiologia";
+        } else if ((valor - 262144) == 0) {
+            return "Fotografia";
+        } else if ((valor - 524288) == 0) {
+            return "Gastronomia";
+        } else if ((valor - 1048576) == 0) {
+            return "Gestão de Agronegócio";
+        } else if ((valor - 2097152) == 0) {
+            return "Gestão Portuária";
+        } else if ((valor - 4194304) == 0) {
+            return "Jornalismo";
+        } else if ((valor - 8388608) == 0) {
+            return "Marketing";
+        } else if ((valor - 16777216) == 0) {
+            return "Medicina";
+        } else if ((valor - 33554432) == 0) {
+            return "Medicina Veterinária";
+        } else if ((valor - 67108864) == 0) {
+            return "Nutrição";
+        } else if ((valor - 134217728) == 0) {
+            return "Odontologia";
+        } else if ((valor - 268435456) == 0) {
+            return "Pedagogia";
+        } else if ((valor - 536870912) == 0) {
+            return "Psicologia";
+        } else if ((valor - 1073741824) == 0) {
+            return "Publicidade";
+        } else if ((valor - 2147483648) == 0) {
+            return "Relações Internacionais";
+        } else if ((valor - 4294967296) == 0) {
+            return "Sistemas de Informação";
+        } else if ((valor - 8589934592) == 0) {
+            return "Outros";
+        }
     }
 
 
