@@ -13,11 +13,11 @@ namespace SistemaVendas.Models.Map
 
         public SeguidorMap()
         {
-            Id<int>(x => x.Id, map => {
+            Id<long>(x => x.Id, map => {
                 map.Generator(Generators.Increment);
             });
-            Property<int>(x => x.ID_Usuario);
-            Property<int>(x => x.ID_Usuario);
+            Property<long>(x => x.ID_Usuario);
+            Property<long>(x => x.ID_Seguindo);
             //Property<string>(x => x.Endereco);
             //Property<int>(x => x.IdPessoa);
             //OneToOne(x => x.Pessoa, map =>

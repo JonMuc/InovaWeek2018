@@ -7,9 +7,9 @@ namespace SistemaVendas.Models
 {
     public class Seguidor
     {
-        public virtual int Id { get; set; }
-        public virtual int ID_Usuario { get; set; }
-        public virtual int ID_Seguindo { get; set; }
+        public virtual long Id { get; set; }
+        public virtual long ID_Usuario { get; set; }
+        public virtual long ID_Seguindo { get; set; }
         public virtual Usuario Usuario { get; set; }
         public virtual Usuario Seguindo { get; set; }
     }

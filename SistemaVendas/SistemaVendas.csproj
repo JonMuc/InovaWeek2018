@@ -212,7 +212,7 @@
     <Compile Include="Models\Postagem.cs" />
     <Compile Include="Models\Map\UsuarioMap.cs" />
     <Compile Include="Models\Usuario.cs" />
-    <Compile Include="Models\Cliente.cs" />
+    <Compile Include="Models\RenderUser.cs" />
     <Compile Include="Models\Compra.cs" />
     <Compile Include="Models\Fornecedor.cs" />
     <Compile Include="Models\ItemCompra.cs" />

@@ -59,64 +59,64 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult FinalizarVenda(int? idCliente, int[] ListaProdutos, int[] ListaQuantidade)
-        {
-            var result = new JsonResult();
-            var total = 0.0;
-            var pagSeguro = new PagSeguro();
-            var item = new ItemVenda();
-            var prod = new ItemVenda();
-            var vendedor = _session.Query<Vendedor>().OrderByDescending(x => x.Id).FirstOrDefault();
-            var cliente = _session.Query<Cliente>().Where(x => x.Id == idCliente).FirstOrDefault();
-            var listProduto = _session.Query<Produto>().Where(x => ListaProdutos.Contains(x.Id)).ToList();
-            var cont = 0;
-            var itens = "";
-            foreach (Produto i in listProduto)
-            {
-                total += (float)i.Valor * ListaQuantidade[cont];
-                itens = itens + i.Nome + " ";
-                cont++;
-            }
-            DateTime data = DateTime.Now;
-            var venda = new Venda();
-            venda.IdCliente = cliente.Id;
-            venda.IdVendedor = vendedor.Id;
-            venda.ValorTotal = (float)total;
-            venda.DataVenda = data;
-            cont = 0;
-            foreach (Produto i in listProduto)
-            {
-                var itemVenda = new ItemVenda();
-                itemVenda.Quantidade = ListaQuantidade[cont];
-                itemVenda.IdProduto = i.Id;
-                itemVenda.IdVenda = venda.Id;
-                _session.Save(itemVenda);
-                cont++;
-            }
-            int refe;
-            try
-            {
-                 refe = _session.Query<Venda>().OrderByDescending(x => x.Referencia).FirstOrDefault().Referencia + 1;
-                 venda.Referencia = refe;
-            }
-            catch
-            {
-                venda.Referencia = 1;
-            }
-            _session.Save(venda);
-            var url = pagSeguro.CheckOut(cliente.Pessoa.Nome, itens, venda.ValorTotal.ToString(), cont.ToString(), cliente.Telefone, venda.Referencia.ToString());
-            venda.url = url;
-            result.Data = venda;
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult FinalizarVenda(int? idCliente, int[] ListaProdutos, int[] ListaQuantidade)
+        //{
+        //    var result = new JsonResult();
+        //    var total = 0.0;
+        //    var pagSeguro = new PagSeguro();
+        //    var item = new ItemVenda();
+        //    var prod = new ItemVenda();
+        //    var vendedor = _session.Query<Vendedor>().OrderByDescending(x => x.Id).FirstOrDefault();
+        //    var cliente = _session.Query<RenderUser>().Where(x => x.Id == idCliente).FirstOrDefault();
+        //    var listProduto = _session.Query<Produto>().Where(x => ListaProdutos.Contains(x.Id)).ToList();
+        //    var cont = 0;
+        //    var itens = "";
+        //    foreach (Produto i in listProduto)
+        //    {
+        //        total += (float)i.Valor * ListaQuantidade[cont];
+        //        itens = itens + i.Nome + " ";
+        //        cont++;
+        //    }
+        //    DateTime data = DateTime.Now;
+        //    var venda = new Venda();
+        //    venda.IdCliente = cliente.Id;
+        //    venda.IdVendedor = vendedor.Id;
+        //    venda.ValorTotal = (float)total;
+        //    venda.DataVenda = data;
+        //    cont = 0;
+        //    foreach (Produto i in listProduto)
+        //    {
+        //        var itemVenda = new ItemVenda();
+        //        itemVenda.Quantidade = ListaQuantidade[cont];
+        //        itemVenda.IdProduto = i.Id;
+        //        itemVenda.IdVenda = venda.Id;
+        //        _session.Save(itemVenda);
+        //        cont++;
+        //    }
+        //    int refe;
+        //    try
+        //    {
+        //         refe = _session.Query<Venda>().OrderByDescending(x => x.Referencia).FirstOrDefault().Referencia + 1;
+        //         venda.Referencia = refe;
+        //    }
+        //    catch
+        //    {
+        //        venda.Referencia = 1;
+        //    }
+        //    _session.Save(venda);
+        //    var url = pagSeguro.CheckOut(cliente.Pessoa.Nome, itens, venda.ValorTotal.ToString(), cont.ToString(), cliente.Telefone, venda.Referencia.ToString());
+        //    venda.url = url;
+        //    result.Data = venda;
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
-        public ActionResult BuscarCliente(string cpf)
-        {
-            var result = new JsonResult();
-            var resp = _session.Query<Cliente>().Where(x => x.CPF.ToLower() == cpf.ToLower()).FirstOrDefault();
-            result.Data = resp;
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult BuscarCliente(string cpf)
+        //{
+        //    var result = new JsonResult();
+        //    var resp = _session.Query<RenderUser>().Where(x => x.CPF.ToLower() == cpf.ToLower()).FirstOrDefault();
+        //    result.Data = resp;
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
 
         public ActionResult ConfirmarEstorno(int idVenda)
@@ -132,15 +132,15 @@ namespace SistemaVendas.Controllers
             result.Data = venda;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult BuscarEstorno(string cpf)
-        {
-            var result = new JsonResult();
-            var resp = _session.Query<Cliente>().Where(x => x.CPF.ToLower() == cpf.ToLower()).FirstOrDefault();
-            var vendas = _session.Query<Venda>().Where(x => x.IdCliente == resp.Id).OrderByDescending(x => x.Id).ToList();
-            resp.Compras = vendas;
-            result.Data = resp;
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult BuscarEstorno(string cpf)
+        //{
+        //    var result = new JsonResult();
+        //    var resp = _session.Query<RenderUser>().Where(x => x.CPF.ToLower() == cpf.ToLower()).FirstOrDefault();
+        //    var vendas = _session.Query<Venda>().Where(x => x.IdCliente == resp.Id).OrderByDescending(x => x.Id).ToList();
+        //    resp.Compras = vendas;
+        //    result.Data = resp;
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
         public ActionResult BuscarVendedor(string nome)
         {
@@ -213,14 +213,14 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult BuscarClienteId(int id)
-        {
-            var result = new JsonResult();
-            var cliente = _session.Query<Cliente>().Where(x => x.Id == id).FirstOrDefault();
-            cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
-            result.Data = cliente;
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult BuscarClienteId(int id)
+        //{
+        //    var result = new JsonResult();
+        //    var cliente = _session.Query<RenderUser>().Where(x => x.Id == id).FirstOrDefault();
+        //    cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
+        //    result.Data = cliente;
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
         public ActionResult ListarVendedor()
         {
@@ -234,17 +234,17 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult ListarClientes()
-        {
-            var result = new JsonResult();
-            var lista = _session.Query<Cliente>().ToList();
-            foreach (Cliente elemento in lista)
-            {
-                elemento.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == elemento.IdPessoa).FirstOrDefault();
-            }
-            result.Data = lista;
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult ListarClientes()
+        //{
+        //    var result = new JsonResult();
+        //    var lista = _session.Query<RenderUser>().ToList();
+        //    foreach (RenderUser elemento in lista)
+        //    {
+        //        elemento.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == elemento.IdPessoa).FirstOrDefault();
+        //    }
+        //    result.Data = lista;
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
         public ActionResult GerarListaEstorno()
         {
@@ -306,52 +306,52 @@ namespace SistemaVendas.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult AtualizarCliente(int id, string nome, string cpf, string telefone, string endereco, DateTime data)
-        {
-            var cliente = _session.Query<Cliente>().Where(x => x.Id == id).FirstOrDefault();
-            cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
-            var result = new JsonResult();
-            try
-            {
-                cliente.Pessoa.Nome = nome;
-                cliente.Pessoa.DataNascimento = data;
-                _session.Save(cliente.Pessoa);
-                cliente.CPF = cpf;
-                cliente.Endereco = endereco;
-                cliente.Telefone = telefone;
-                _session.Save(cliente);
-                result.Data = true;
-            }
-            catch
-            {
-                result.Data = false;
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult AtualizarCliente(int id, string nome, string cpf, string telefone, string endereco, DateTime data)
+        //{
+        //    var cliente = _session.Query<RenderUser>().Where(x => x.Id == id).FirstOrDefault();
+        //    cliente.Pessoa = _session.Query<Pessoa>().Where(x => x.Id == cliente.IdPessoa).FirstOrDefault();
+        //    var result = new JsonResult();
+        //    try
+        //    {
+        //        cliente.Pessoa.Nome = nome;
+        //        cliente.Pessoa.DataNascimento = data;
+        //        _session.Save(cliente.Pessoa);
+        //        cliente.CPF = cpf;
+        //        cliente.Endereco = endereco;
+        //        cliente.Telefone = telefone;
+        //        _session.Save(cliente);
+        //        result.Data = true;
+        //    }
+        //    catch
+        //    {
+        //        result.Data = false;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
-        public ActionResult SalvarCliente(string nome, string cpf, string telefone, string endereco, DateTime data)
-        {
-            var pessoa = new Pessoa();
-            var cliente = new Cliente();
-            var result = new JsonResult();
-            try
-            {
-                pessoa.Nome = nome;
-                pessoa.DataNascimento = data;
-                _session.Save(pessoa);
-                cliente.CPF = cpf;
-                cliente.IdPessoa = pessoa.Id;
-                cliente.Endereco = endereco;
-                cliente.Pessoa = pessoa;
-                cliente.Telefone = telefone;
-                _session.Save(cliente);
-                result.Data = true;
-            }
-            catch
-            {
-                result.Data = false;
-            }
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult SalvarCliente(string nome, string cpf, string telefone, string endereco, DateTime data)
+        //{
+        //    var pessoa = new Pessoa();
+        //    var cliente = new RenderUser();
+        //    var result = new JsonResult();
+        //    try
+        //    {
+        //        pessoa.Nome = nome;
+        //        pessoa.DataNascimento = data;
+        //        _session.Save(pessoa);
+        //        cliente.CPF = cpf;
+        //        cliente.IdPessoa = pessoa.Id;
+        //        cliente.Endereco = endereco;
+        //        cliente.Pessoa = pessoa;
+        //        cliente.Telefone = telefone;
+        //        _session.Save(cliente);
+        //        result.Data = true;
+        //    }
+        //    catch
+        //    {
+        //        result.Data = false;
+        //    }
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
     }
 }

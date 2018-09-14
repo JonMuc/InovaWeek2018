@@ -75,6 +75,47 @@ namespace SistemaVendas.Controllers
             return Json(Response, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult RenderUser(long IdUser)
+        {
+            var usuario = (Usuario)Session["Usuario"];
+            var res = new RenderUser();
+            res.Usuario = _session.Query<Usuario>().Where(x => x.Id == IdUser).FirstOrDefault();
+            res.Usuario.Seguindo = _session.Query<Seguidor>().Where(x => x.ID_Usuario == usuario.Id && x.ID_Seguindo == IdUser).Any();
+            var lista = _session.Query<Postagem>().Where(x => x.ID_Usuario == IdUser && !x.IsResposta).OrderByDescending(x => x.Data).Take(10).ToList();
+            foreach (Postagem item in lista)
+            {
+                item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
+                item.DataString = item.Data.ToLongDateString();
+                item.QuantidadeResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).Count();
+                item.ListaResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).ToList();
+                item.Avaliei = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario == usuario.Id).Any();
+                if (item.Avaliei)
+                {
+                    item.NotaUsuario = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario == usuario.Id).FirstOrDefault().Nota;
+                }
+            }
+            res.ListaPostagem = lista;
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+        public void Desseguir(long IdUser)
+        {
+            var usuario = (Usuario)Session["Usuario"];
+            var userDesseguir = _session.Query<Seguidor>().Where(x => x.ID_Usuario == usuario.Id && x.ID_Seguindo == IdUser).FirstOrDefault();
+            userDesseguir.ID_Seguindo = 9999999;
+            userDesseguir.ID_Usuario = 9999999;
+            _session.Save(userDesseguir);
+        }
+
+        public void Seguir(long idUser)
+        {
+            var usuario = (Usuario)Session["Usuario"];
+            var seguidor = new Seguidor();
+            seguidor.ID_Usuario = usuario.Id;
+            seguidor.ID_Seguindo = idUser;
+            _session.Save(seguidor);
+        }
+
         public ActionResult RealizarAvaliacao(long idPostagem, int nota)
         {
             var result = new JsonResult();

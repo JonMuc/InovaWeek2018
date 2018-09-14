@@ -8,23 +8,23 @@ using NHibernate.Mapping.ByCode.Conformist;
 
 namespace SistemaVendas.Models.Map
 {
-    class ClienteMap : ClassMapping<Cliente>
+    class ClienteMap : ClassMapping<RenderUser>
     {
 
         public ClienteMap()
         {
-            Id<int>(x => x.Id, map => {
-                map.Generator(Generators.Increment);
-            });
-            Property<string>(x => x.CPF);
-            Property<string>(x => x.Telefone);
-            Property<string>(x => x.Endereco);
-            Property<int>(x => x.IdPessoa);
-            OneToOne(x => x.Pessoa, map =>
-            {
-                map.PropertyReference(typeof(Pessoa).GetProperty("PessoaId"));
-                map.Cascade(Cascade.All);
-            });
+            //Id<int>(x => x.Id, map => {
+            //    map.Generator(Generators.Increment);
+            //});
+            //Property<string>(x => x.CPF);
+            //Property<string>(x => x.Telefone);
+            //Property<string>(x => x.Endereco);
+            //Property<int>(x => x.IdPessoa);
+            //OneToOne(x => x.Pessoa, map =>
+            //{
+            //    map.PropertyReference(typeof(Pessoa).GetProperty("PessoaId"));
+            //    map.Cascade(Cascade.All);
+            //});
             //OneToOne(x => x.Compras, map =>
             //{
             //    map.PropertyReference(typeof(Venda).GetProperty("VendaId"));

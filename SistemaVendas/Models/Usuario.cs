@@ -18,5 +18,7 @@ namespace SistemaVendas.Models
         public virtual long AreasInteresse { get; set; }
         public virtual long NotaAvaliacao { get; set; }
         public virtual long QuantidadeAvaliacao { get; set; }
+        public virtual bool Seguindo { get; set; }
+
     }
 }
