@@ -19,6 +19,8 @@
     UrlRenderUser = '@Url.Action("RenderUser", "Dashboard")';
     UrlSeguir = '@Url.Action("Seguir", "Dashboard")';
     UrlDesseguir = '@Url.Action("Desseguir", "Dashboard")';
+    UrlEnviarFoto = '@Url.Action("SalvarFoto", "Dashboard")';
+    
 </script>
 
 
@@ -29,8 +31,22 @@
 <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
 <div class="col-md-12">
     <div class="col-md-3">
-        <div class="col-md-12" style="background-color:aqua; height: 50px">
-
+        <div class="col-md-12">
+            @using (Html.BeginForm("SalvarFoto", "Dashboard", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="editor-field">
+                    <input type="file" name="file" id="file" />
+                    @Html.HiddenFor(model => model.Usuario.Foto)
+                    @Html.ValidationMessageFor(model => model.Usuario.Foto)
+                </div>
+                 <p>
+                    <input type="submit" value="Create" />
+                </p>
+            }
+            @if (Model.Usuario.Foto != null)
+            {
+                <img src= "@Url.Content(Model.Usuario.Foto)" alt="Image" />
+            }
         </div>
     </div>
     <div class="col-md-7">
@@ -91,6 +107,11 @@
     });
     var statusComentario = false;
 
+    EnviarFoto = function () {
+
+        $.post(UrlEnviarFoto, function (res) {
+        });
+    }
 
 
     BuscarNome = function () {

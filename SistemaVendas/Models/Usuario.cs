@@ -14,6 +14,8 @@ namespace SistemaVendas.Models
         public virtual DateTime DataNascimento { get; set; }
         public virtual string Login { get; set; }
         public virtual string Senha { get; set; }
+        public virtual string Foto { get; set; }
+
         public virtual long Curso { get; set; }
         public virtual long AreasInteresse { get; set; }
         public virtual long NotaAvaliacao { get; set; }

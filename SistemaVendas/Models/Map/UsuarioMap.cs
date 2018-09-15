@@ -24,6 +24,7 @@ namespace SistemaVendas.Models.Map
             Property<string>(x => x.Senha);
             Property<string>(x => x.Email);
             Property<string>(x => x.Nome);
+            Property<string>(x => x.Foto);
             Property<string>(x => x.Sobrenome);
             Property<DateTime>(x => x.DataNascimento);
             //OneToOne(x => x.Compras, map =>

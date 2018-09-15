@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using WebCrawler;
 
@@ -20,12 +21,14 @@ namespace SistemaVendas.Controllers
         public ActionResult Index()
         {
             var lista = _session.Query<Postagem>().OrderByDescending(x => x.Data).Take(10).ToList();
+            var usuario = (Usuario)Session["Usuario"];
             foreach (Postagem item in lista)
             {
                 item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
             }
             var postagem = new Postagem();
             postagem.ListaPostagem = lista;
+            postagem.Usuario = _session.Query<Usuario>().Where(x => x.Id == usuario.Id).FirstOrDefault();
             return View(postagem);
         }
 
@@ -73,6 +76,30 @@ namespace SistemaVendas.Controllers
             Response.BufferOutput = false;
             Response.Redirect("/Home/Index");
             return Json(Response, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SalvarFoto(HttpPostedFileBase file)
+        {
+            var usuario = (Usuario)Session["Usuario"];
+            var userEdit = _session.Query<Usuario>().Where(x => x.Id == usuario.Id).FirstOrDefault();
+            if (file != null)
+            {
+                if (usuario.Foto != null)
+                {
+                    if (System.IO.File.Exists(Server.MapPath("~/" + userEdit.Foto)))
+                    {
+                        System.IO.File.Delete(Server.MapPath("~/" + userEdit.Foto));
+                    }
+                }
+                String[] strName = file.FileName.Split('.');
+                String strExt = strName[strName.Count() - 1];
+                string pathSave = String.Format("{0}{1}.{2}", Server.MapPath("~/Imagens/"), userEdit.Id, strExt);
+                String pathBase = String.Format("/Imagens/{0}.{1}", userEdit.Id, strExt);
+                file.SaveAs(pathSave);
+                userEdit.Foto = pathBase;
+                _session.Save(userEdit);
+            }
+            return null;
         }
 
         public ActionResult RenderUser(long IdUser)

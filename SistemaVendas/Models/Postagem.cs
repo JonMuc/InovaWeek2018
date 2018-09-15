@@ -25,6 +25,8 @@ namespace SistemaVendas.Models
         public virtual long QuantidadeResposta { get; set; }
         public virtual bool Avaliei { get; set; }
         public virtual long NotaUsuario { get; set; }
+        public virtual string Foto { get; set; }
+
 
     }
 }
