@@ -239,6 +239,7 @@
     <Compile Include="Repository\RepositoryCrud.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bin\roslyn\csc.exe" />
     <Content Include="bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.css" />
     <Content Include="bower_components\bootstrap-colorpicker\dist\css\bootstrap-colorpicker.min.css" />
     <Content Include="bower_components\bootstrap-colorpicker\dist\img\bootstrap-colorpicker\alpha-horizontal.png" />
