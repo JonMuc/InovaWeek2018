@@ -21,6 +21,13 @@ namespace SistemaVendas.Models
         public virtual long NotaAvaliacao { get; set; }
         public virtual long QuantidadeAvaliacao { get; set; }
         public virtual bool Seguindo { get; set; }
+        public virtual long QuantidadeSeguidores { get; set; }
+        public virtual long QuantidadeSeguindo { get; set; }
+        public virtual long Idade { get; set; }
+        public virtual long Pontos { get; set; }
+        public virtual long QuantidadePublicacoes { get; set; }
+        public virtual long QuantidadeResposta { get; set; }
+
 
     }
 }

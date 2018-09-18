@@ -29,6 +29,14 @@ namespace SistemaVendas.Controllers
             var postagem = new Postagem();
             postagem.ListaPostagem = lista;
             postagem.Usuario = _session.Query<Usuario>().Where(x => x.Id == usuario.Id).FirstOrDefault();
+            postagem.Usuario.QuantidadeSeguindo = _session.Query<Seguidor>().Where(x => x.ID_Usuario == usuario.Id).Count();
+            postagem.Usuario.QuantidadeSeguidores = _session.Query<Seguidor>().Where(x => x.ID_Seguindo == usuario.Id).Count();
+            postagem.Usuario.Idade = DateTime.Now.Year - postagem.Usuario.DataNascimento.Year;
+            var nota = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id).ToList();
+            postagem.Usuario.Pontos = nota != null ? nota.Select(x => x.Nota).Sum() : 0;
+            postagem.Usuario.NotaAvaliacao = postagem.Usuario.QuantidadeAvaliacao == 0 ? 0 : postagem.Usuario.Pontos / postagem.Usuario.QuantidadeAvaliacao;
+            postagem.Usuario.QuantidadePublicacoes = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id).Count();
+            postagem.Usuario.QuantidadeResposta = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id && x.IsResposta).Count();
             return View(postagem);
         }
 
@@ -57,7 +65,7 @@ namespace SistemaVendas.Controllers
             foreach (Postagem item in lista)
             {
                 item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
-                item.DataString = item.Data.ToLongDateString();
+                item.DataString = item.Data.ToLocalTime().ToString();
                 item.QuantidadeResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).Count();
                 item.ListaResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).ToList();
                 item.Avaliei = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario == usuario.Id).Any();
@@ -112,7 +120,7 @@ namespace SistemaVendas.Controllers
             foreach (Postagem item in lista)
             {
                 item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
-                item.DataString = item.Data.ToLongDateString();
+                item.DataString = item.Data.ToLocalTime().ToString();
                 item.QuantidadeResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).Count();
                 item.ListaResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).ToList();
                 item.Avaliei = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario == usuario.Id).Any();
@@ -165,10 +173,11 @@ namespace SistemaVendas.Controllers
             _session.Save(avaliacao);
             var postagem = _session.Query<Postagem>().Where(x => x.Id == idPostagem).FirstOrDefault();
             postagem.Nota = postagem.Nota + nota;
+            //postagem.ID_Usuario = usuario.Id;//
             postagem.NumAvaliacoes = postagem.NumAvaliacoes + 1;
             _session.Save(postagem);
             var usuarioPostagem = _session.Query<Usuario>().Where(x => x.Id == postagem.ID_Usuario).FirstOrDefault();
-            usuarioPostagem.NotaAvaliacao = usuarioPostagem.NotaAvaliacao + nota;
+            usuarioPostagem.NotaAvaliacao = usuario.NotaAvaliacao + nota;
             usuarioPostagem.QuantidadeAvaliacao = usuarioPostagem.QuantidadeAvaliacao + 1;
             _session.Save(usuarioPostagem);
             result.Data = true;
@@ -180,13 +189,13 @@ namespace SistemaVendas.Controllers
             var usuario = (Usuario)Session["Usuario"];
             var postagem = _session.Query<Postagem>().Where(x => x.Id == idPostagem).FirstOrDefault();
             postagem.Usuario = _session.Query<Usuario>().Where(x => x.Id == postagem.ID_Usuario).FirstOrDefault();
-            postagem.DataString = postagem.Data.ToLongDateString();
+            postagem.DataString = postagem.Data.ToLocalTime().ToString();
             postagem.QuantidadeResposta = _session.Query<Postagem>().Where(x => postagem.Id == x.ID_Resposta).Count();
             postagem.ListaResposta = _session.Query<Postagem>().Where(x => postagem.Id == x.ID_Resposta).OrderByDescending(x => x.Data).ToList();
             foreach (Postagem item in postagem.ListaResposta)
             {
                 item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
-                item.DataString = item.Data.ToLongDateString();
+                item.DataString = item.Data.ToLocalTime().ToString();
                 item.QuantidadeResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).Count();
                 item.ListaResposta = _session.Query<Postagem>().Where(x => item.Id == x.ID_Resposta).ToList();
                 item.Avaliei = _session.Query<Avaliacao>().Where(x => x.ID_Postagem == item.Id && x.ID_Usuario == usuario.Id).Any();

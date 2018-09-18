@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <style>
+        ::placeholder {
+            font-weight:bold;
+            color:black;
+        }
+    </style>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
@@ -13,6 +19,7 @@
     @RenderSection("scripts", required: false)
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="~/Content/bootstrap-select.min.css">
+
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="~/Content/bootstrap-select.min.js"></script>
@@ -28,10 +35,10 @@
                 </div>
                 <div class="col-md-7">
                     <div class="col-md-10">
-                        <input type="text" style="width:100%" id="filtro_nome_usuario" class="form-control" placeholder="Procure por alguem.">
+                        <input type="text" style="width:100%;border-radius: 5vh; height: 3.5vh; margin-top: 0.7vh;border: unset; background: linear-gradient(to right, #4facac, #d7d7ec);" id="filtro_nome_usuario" placeholder="Procure por alguem.">
                     </div>
                     <div class="col-md-2" style="margin-top: 0.6%">
-                        <button type="submit" onclick="PesquisarUsuario()" data-target="#ModalPesquisa" data-toggle="modal" class="btn btn-secondary btn-lg btn-block">Pesquisar</button>
+                        <button type="submit" onclick="PesquisarUsuario()" data-target="#ModalPesquisa" data-toggle="modal" class="btn btn-secondary btn-lg btn-block " style="color: white; border: solid; border-radius: 3vh;">Pesquisar</button>
                     </div>
                 </div>
                 <div class="col-md-2">

@@ -20,7 +20,7 @@
     UrlSeguir = '@Url.Action("Seguir", "Dashboard")';
     UrlDesseguir = '@Url.Action("Desseguir", "Dashboard")';
     UrlEnviarFoto = '@Url.Action("SalvarFoto", "Dashboard")';
-    
+
 </script>
 
 
@@ -30,32 +30,91 @@
 <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
 <script>$(document).ready(function () { $('body').bootstrapMaterialDesign(); });</script>
 <div class="col-md-12">
-    <div class="col-md-3">
+    <div class="col-md-3" style="background-color: white; border-radius: 5vh;">
         <div class="col-md-12">
-            @using (Html.BeginForm("SalvarFoto", "Dashboard", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <div class="editor-field">
-                    <input type="file" name="file" id="file" />
-                    @Html.HiddenFor(model => model.Usuario.Foto)
-                    @Html.ValidationMessageFor(model => model.Usuario.Foto)
-                </div>
-                 <p>
-                    <input type="submit" value="Create" />
-                </p>
-            }
             @if (Model.Usuario.Foto != null)
             {
-                <img src= "@Url.Content(Model.Usuario.Foto)" alt="Image" />
+                <center><img style="border-radius: 15vh;width: 22vh;" src="@Url.Content(Model.Usuario.Foto)" alt="Image" /></center>
+            }
+            else
+            {
+                using (Html.BeginForm("SalvarFoto", "Dashboard", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div class="editor-field">
+                        <input type="file" name="file" id="file" />
+                        @Html.HiddenFor(model => model.Usuario.Foto)
+                        @Html.ValidationMessageFor(model => model.Usuario.Foto)
+                    </div>
+                    <p>
+                        <input type="submit" value="Create" />
+                    </p>
+                }
             }
         </div>
+        <div class="col-md-12" style="margin-top:4%;text-align: center;">
+            <div class="col-md-3" style="font-size: 2vh;font-weight: bold; color: darkblue;">
+                <span style="color:gray">Seguindo </span>
+                <span>
+                    @Html.DisplayFor(x => x.Usuario.QuantidadeSeguindo)
+                </span>
+            </div>
+            <div class="col-md-3 offset-1" style="font-size: 2vh;font-weight: bold; color: darkblue;">
+                <span style="color:gray">Seguidores </span>
+                <span>
+                    @Html.DisplayFor(x => x.Usuario.QuantidadeSeguidores)
+                </span>
+            </div>
+            <div class="col-md-4 offset-1" style="font-size: 2vh;font-weight: bold; color: darkblue;">
+                <span style="color:gray">Avaliação </span>
+                <span id="UsuarioNotaAvaliacao"></span>
+                @Html.HiddenFor(x => x.Usuario.NotaAvaliacao)
+            </div>
+        </div>
+        <div class="col-md-12" style="margin-top:19%">
+            <div style="font-size:1.5vh;font-weight: bold; color: dimgray;">
+                <span style="color:gray">Pontos: </span>
+                <span style="font-size:2vh; margin-left:4%">
+                    @Html.DisplayFor(x => x.Usuario.Pontos)
+                </span>
+            </div>
+        </div>
+        <div class="col-md-12" style="font-size:1.5vh; font-weight: bold;color: dimgray;">
+            <span style="color:gray">Idade: </span>
+            <span style="font-size:2vh; margin-left:4%">
+                @Html.DisplayFor(x => x.Usuario.Idade)
+            </span>
+        </div>
+        <div class="col-md-12" style="font-size:1.5vh; font-weight: bold;color: dimgray;">
+            <span style="color:gray">Curso: </span>
+            <span style="font-size:2vh; margin-left:4%" id="UsuarioCurso"></span>
+            @Html.HiddenFor(x => x.Usuario.Curso)
+        </div>
+        <div class="col-md-12" style="font-size:1.5vh;font-weight: bold;color: dimgray;">
+            <span style="color:gray">Email: </span>
+            <span style="font-size:2vh; margin-left:4%">
+                @Html.DisplayFor(x => x.Usuario.Email)
+            </span>
+        </div>
+        <div class="col-md-12" style="font-size:1.5vh;font-weight: bold;color: dimgray;">
+            <span style="color:gray">Quantidade de Publicações: </span>
+            <span style="font-size:2vh; margin-left:4%">
+                @Html.DisplayFor(x => x.Usuario.QuantidadePublicacoes)
+            </span>
+        </div>
+        <div class="col-md-12" style="font-size:1.5vh;font-weight: bold;color: dimgray;">
+            <span style="color:gray">Quantidade de Resposta: </span>
+            <span style="font-size:2vh; margin-left:4%">
+                @Html.DisplayFor(x => x.Usuario.QuantidadeResposta)
+            </span>
+        </div>
     </div>
-    <div class="col-md-7">
+    <div class="col-md-7" style="margin-left:1%;background-color: white; border-radius: 6vh;">
         <div class="col-md-12">
             <div class="form-group col-md-10">
-                <input type="text" style="width:100%" class="form-control" id="comentario" placeholder="Faça uma perguta.">
+                <input type="text" style="width:100%; margin-top: 1%;" class="form-control" id="comentario" placeholder="Faça uma perguta.">
             </div>
             <div class="col-md-2">
-                <button type="submit" onclick="Comentar()" class="btn btn-secondary btn-lg btn-block">Perguntar</button>
+                <button type="submit" onclick="Comentar()" style="margin-top: 7%; color: #455292; border: solid; border-radius: 3vh;font-size: 1.5vh;" class="btn btn-secondary btn-lg btn-block">Perguntar</button>
             </div>
         </div>
         <div class="col-md-12" style="margin-top:5%">
@@ -64,32 +123,38 @@
             </div>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2" style="margin-left:-1%; padding: 4vh; margin-top: -4vh;">
         <div class="col-md-12" style="text-align:center">
-            <span class="col-md-12" style="font-size: 1.7em; padding: 5px;">Últimas Notícias</span>
+            <span class="col-md-12" style="font-size: 1.7em; padding: 5px;font-weight: bold;">Últimas Notícias</span>
         </div>
         <div id="feed_comentarios">
 
         </div>
     </div>
+
+</div>
+<div>
+    <select class="form-control glyphicon">
+        <option value="">&#x2212; Hello</option>
+        <option value="glyphicon-list-alt">&#xe032; Text</option>
+    </select>
 </div>
 
 
-
-<div class="modal fade" id="ModalUsuario" tabindex="-1"  role="dialog" aria-labelledby="ModalUsuario" aria-hidden="true">
+<div class="modal fade" id="ModalUsuario" tabindex="-1" role="dialog" aria-labelledby="ModalUsuario" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="position: absolute;" role="document">
         <div class="modal-content" style="border-radius: 3em;background-image: linear-gradient(to bottom, azure, darkturquoise)">
             <div class="modal-body">
                 <h1 style="text-align:center;border-bottom: black; border-style: groove;" id="nome_user_render"></h1>
                 <div style="margin-top:5%" class="col-md-12">
-                    <div class="col-md-4" id="perfil_render" style="border:1px" >
-                    
+                    <div class="col-md-4" id="perfil_render" style="border:1px">
+
                     </div>
                     <div style="border:1px" id="div_conteudo_modal_usuario" class="col-md-8">
 
                     </div>
                 </div>
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
@@ -104,6 +169,8 @@
         PopularListar();
         BuscarFeed();
         BuscarNome();
+        $("#UsuarioNotaAvaliacao").append(ObterAvaliacaoUsuarioMedia($("#Usuario_NotaAvaliacao").val()));
+        $("#UsuarioCurso").append(ObterCurso($("#Usuario_Curso").val()));
     });
     var statusComentario = false;
 
@@ -116,7 +183,7 @@
 
     BuscarNome = function () {
         $.post(UrlBuscarNome, function (res) {
-            $("#nome_usuario").append("<span style='font-size: 2em; color: white;'>" + res.Data.Nome + "</span>");
+            $("#nome_usuario").append("<span style='font-size: 3vh; color: white;'>" + res.Data.Nome + "</span>");
         });
     }
 
@@ -125,9 +192,9 @@
             if (res.Data != null) {
                 for (x = 0; x < res.Data.length; x++) {
                     if (res.Data[x].Avaliei) {
-                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1em; color: black;'>" + res.Data[x].Usuario.Nome + " curtiu sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
+                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1.15em; color: black;'><span style='font-weight: bold'>" + res.Data[x].Usuario.Nome + " </span>curtiu sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1.15em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
                     } else {
-                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1em; color: black;'>" + res.Data[x].Usuario.Nome + " comentou sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
+                        $("#feed_comentarios").append("<div><span class='col-md-12' style='font-size: 1.15em; color: black;'><span style='font-weight: bold'>" + res.Data[x].Usuario.Nome + "</span> comentou sua publicação:  </br>" + res.Data[x].Conteudo + "</span><p><span  style='font-size: 1.15em; color: black;' class='pull-right'>" + res.Data[x].DataString + "</span></p></div>");
                     }
                 }
             }
@@ -139,9 +206,9 @@
             if (res.Data != null) {
                 for (x = 0; x < res.Data.length; x++) {
                     var lista = res.Data[x].ListaResposta;
-                    $("#corpo_lista").append("<div id='corpo_comentario" + x + "' style='border: outset; border-radius: 2em; box-shadow: 0.5em 0.5em lightblue;'" + "class=" + "alert alert-success" + ">" + "<h4 style='font-size: 1.5rem;'  class=" + "alert-heading" + ">" + res.Data[x].Usuario.Nome + "<span style='font-size: 1.3rem;' class='pull-right'>" + res.Data[x].DataString + "</span></h4> " +
+                    $("#corpo_lista").append("<div id='corpo_comentario" + x + "' style='border: outset; border-radius: 2em; box-shadow: 0.5em 0.5em lightblue;'" + "class=" + "alert alert-success" + ">" + "<h4 style='font-size: 1.5rem;font-weight: bold;'  class=" + "alert-heading" + ">" + res.Data[x].Usuario.Nome + "<span style='font-size: 1.3rem;' class='pull-right'>" + res.Data[x].DataString + "</span></h4> " +
                         "<span style='font-size: 1.5rem;' >" + res.Data[x].Conteudo + "</span>" +
-                        "<p>" + "<select style='width: 8%;' onclick=(Avaliar(" + res.Data[x].Id + "," + x + ")) class='custom-select btn btn-primary btn-lg' id='selectCurtir" + x + "'><option selected>Avalie</option><option value='1'>Nota 1</option><option value='2'>Nota 2</option><option value='3'>Nota 3</option><option value='4'>Nota 4</option><option value='5'>Nota 5</option></select>" +
+                        "<p>" + "<select style='width: 10%;' onclick=(Avaliar(" + res.Data[x].Id + "," + x + ")) class='custom-select btn btn-primary btn-lg glyphicon' id='selectCurtir" + x + "'><option selected>Avalie</option><option value='1'> &#xe125;</option><option value='2'>&#xe125;&#xe125;</option><option value='3'>&#xe125;&#xe125;&#xe125;</option><option value='4'>&#xe125;&#xe125;&#xe125;&#xe125;</option><option value='5'>&#xe125;&#xe125;&#xe125;&#xe125;&#xe125;</option></select>" +
                         "<button type='button'" + "onclick=(FazerComentario(" + x + "," + res.Data[x].Id + ")) class='btn btn-primary btn-lg'>" + res.Data[x].QuantidadeResposta + " Comentarios</button>" + "</p>" + " </div > ");
                     if (res.Data[x].Avaliei) {
                         $("#selectCurtir" + x).val(res.Data[x].NotaUsuario);
@@ -157,7 +224,7 @@
             console.log(res);
             if (res.Data != null) {
                 for (x = 0; x < res.Data.length; x++) {
-                    $("#div_conteudo_modal").append("<div style='border-radius:2em;margin-top:3%;border: 1px outset; padding: 10px; box-shadow: 3px 4px turquoise; background-image: linear-gradient(to right, aquamarine, aqua);'><span style='font-size: 1em; color: black;'><b onclick='RenderUsuario(" + res.Data[x].Id +")' data-target='#ModalUsuario' data-toggle='modal' data-dismiss='modal'>" + res.Data[x].Nome + "</b></br><b>Curso:</b> " + ObterCurso(res.Data[x].Curso) + "</br><b>Avaliação do Usuário:</b> " + ObterAvaliacaoUsuario(res.Data[x].NotaAvaliacao, res.Data[x].QuantidadeAvaliacao)
+                    $("#div_conteudo_modal").append("<div style='border-radius:2em;margin-top:3%;border: 1px outset; padding: 10px; box-shadow: 3px 4px turquoise; background-image: linear-gradient(to right, aquamarine, aqua);'><span style='font-size: 1em; color: black;'><b onclick='RenderUsuario(" + res.Data[x].Id + ")' data-target='#ModalUsuario' data-toggle='modal' data-dismiss='modal'>" + res.Data[x].Nome + "</b></br><b>Curso:</b> " + ObterCurso(res.Data[x].Curso) + "</br><b>Avaliação do Usuário:</b> " + ObterAvaliacaoUsuario(res.Data[x].NotaAvaliacao, res.Data[x].QuantidadeAvaliacao)
                         + "</br><b>Avaliações realizadas: </b>" + res.Data[x].QuantidadeAvaliacao + "</span><p></p></div>");
                 }
             }
@@ -165,13 +232,11 @@
     }
 
     Seguir = function (idUser) {
-        $.post(UrlSeguir, { idUser }, function (res) {});
+        $.post(UrlSeguir, { idUser }, function (res) { });
     }
 
     RenderUsuario = function (IdUser) {
-        console.log(IdUser);
         $.post(UrlRenderUser, { IdUser }, function (res) {
-            console.log(res);
             if (res != null) {
                 $("#nome_user_render").append(res.Usuario.Nome);
                 if (res.Usuario.Seguindo) {
@@ -187,13 +252,14 @@
                     if (res.ListaPostagem[x].Avaliei) {
                         $("#selectCurtirRender" + x).val(res.ListaPostagem[x].NotaUsuario);
                     }
+
                 }
             }
         });
     }
 
     Desseguir = function (idUser) {
-        $.post(UrlDesseguir, { idUser }, function (res) {});
+        $.post(UrlDesseguir, { idUser }, function (res) { });
     }
 
     FazerComentarioRender = function (idLinha, idPostagem) {
@@ -219,17 +285,31 @@
         }
     }
 
+    ObterAvaliacaoUsuarioMedia = function (media) {
+        if (media >= 4) {
+            return "Ótimo";
+        } else if (media >= 3 & media < 4) {
+            return "Bom";
+        } else if (media >= 2 & media < 3) {
+            return "Regular";
+        } else if (media >= 1 & media < 2) {
+            return "Ruim";
+        } else if (media >= 0 & media < 1) {
+            return "Péssimo";
+        }
+    }
+
     ObterAvaliacaoUsuario = function (NotaAvaliacao, QuantidadeAvaliacao) {
         media = NotaAvaliacao / QuantidadeAvaliacao;
-        if (media > 4) {
-            return "Otimo.";
-        } else if (media > 3 & media < 4) {
+        if (media >= 4) {
+            return "Ótimo.";
+        } else if (media >= 3 & media < 4) {
             return "Bom";
-        } else if (media > 2 & media < 3) {
+        } else if (media >= 2 & media < 3) {
             return "Regular";
-        } else if (media > 1 & media < 2) {
+        } else if (media >= 1 & media < 2) {
             return "Ruim";
-        } else if (media > 0 & media < 1) {
+        } else if (media >= 0 & media < 1) {
             return "Péssimo";
         }
     }
@@ -297,6 +377,7 @@
     Comentar = function () {
         comentario = $("#comentario").val();
         $.post(UrlBuscarComentar, { comentario }, function (res) {
+            location.reload();
             if (res.Data != true) {
                 $("#msg_erro").css("display", "");
             } else {
