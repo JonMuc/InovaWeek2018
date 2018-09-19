@@ -6500,6 +6500,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Imagens\download.png" />
+    <Content Include="Imagens\_fuck.png" />
     <Content Include="img\estudo.jpg" />
     <Content Include="Scripts\bootstrap-select-1.12.4\dist\css\bootstrap-select.css" />
     <Content Include="Scripts\bootstrap-select-1.12.4\dist\css\bootstrap-select.min.css" />
@@ -7456,7 +7458,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Imagens\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>

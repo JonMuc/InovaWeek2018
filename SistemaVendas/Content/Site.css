@@ -1,6 +1,8 @@
 ﻿body {
     /*padding-bottom: 20px;*/
-    background-image: linear-gradient(to right, aliceblue,#f0effe);
+    /*background-image: linear-gradient(to right, aliceblue,#f0effe);*/
+    background-image: url('../Imagens/_fuck.png');
+
 }
 
 /* Set padding to keep content from hitting the edges */

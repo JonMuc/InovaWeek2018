@@ -116,7 +116,15 @@ namespace SistemaVendas.Controllers
             var res = new RenderUser();
             res.Usuario = _session.Query<Usuario>().Where(x => x.Id == IdUser).FirstOrDefault();
             res.Usuario.Seguindo = _session.Query<Seguidor>().Where(x => x.ID_Usuario == usuario.Id && x.ID_Seguindo == IdUser).Any();
-            var lista = _session.Query<Postagem>().Where(x => x.ID_Usuario == IdUser && !x.IsResposta).OrderByDescending(x => x.Data).Take(10).ToList();
+            res.Usuario.QuantidadeSeguindo = _session.Query<Seguidor>().Where(x => x.ID_Usuario == usuario.Id).Count();
+            res.Usuario.QuantidadeSeguidores = _session.Query<Seguidor>().Where(x => x.ID_Seguindo == usuario.Id).Count();
+            res.Usuario.Idade = DateTime.Now.Year - res.Usuario.DataNascimento.Year;
+            var nota = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id).ToList();
+            res.Usuario.Pontos = nota != null ? nota.Select(x => x.Nota).Sum() : 0;
+            res.Usuario.NotaAvaliacao = res.Usuario.QuantidadeAvaliacao == 0 ? 0 : res.Usuario.Pontos / res.Usuario.QuantidadeAvaliacao;
+            res.Usuario.QuantidadePublicacoes = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id).Count();
+            res.Usuario.QuantidadeResposta = _session.Query<Postagem>().Where(x => x.ID_Usuario == usuario.Id && x.IsResposta).Count();
+            var lista = _session.Query<Postagem>().Where(x => x.ID_Usuario == IdUser && !x.IsResposta).OrderByDescending(x => x.Data).Take(5).ToList();
             foreach (Postagem item in lista)
             {
                 item.Usuario = _session.Query<Usuario>().Where(x => x.Id == item.ID_Usuario).FirstOrDefault();
@@ -254,6 +262,11 @@ namespace SistemaVendas.Controllers
         {
             var result = new JsonResult();
             var listaUser = _session.Query<Usuario>().Where(x => x.Nome.ToLower().Contains(nome.ToLower())).ToList();
+            foreach (Usuario lista in listaUser) {
+                var nota = _session.Query<Postagem>().Where(x => x.ID_Usuario == lista.Id).ToList();
+                lista.Pontos = nota != null ? nota.Select(x => x.Nota).Sum() : 0;
+                lista.NotaAvaliacao = lista.QuantidadeAvaliacao == 0 ? 0 : lista.Pontos / lista.QuantidadeAvaliacao;
+            }
             result.Data = listaUser;
             return Json(result, JsonRequestBehavior.AllowGet);
         }
